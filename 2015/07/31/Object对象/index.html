@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Jacy</title>
+  <title>Object对象 | Jacy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jacy">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="###Object()Object本身当作工具方法使用时，可以将任意值转为对象。
+
+Object() // 返回一个空对象Object(undefined) // 返回一个空对象Object(null) // 返回一个空对象Object(1) // 等同于 new Number(1)Object(‘foo’) // 等同于 new String(‘foo’)Object(true) // 等同于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Object对象">
+<meta property="og:url" content="http://yoursite.com/2015/07/31/Object对象/index.html">
 <meta property="og:site_name" content="Jacy">
-<meta property="og:description">
+<meta property="og:description" content="###Object()Object本身当作工具方法使用时，可以将任意值转为对象。
+
+Object() // 返回一个空对象Object(undefined) // 返回一个空对象Object(null) // 返回一个空对象Object(1) // 等同于 new Number(1)Object(‘foo’) // 等同于 new String(‘foo’)Object(true) // 等同于">
+<meta property="og:updated_time" content="2015-07-30T11:02:41.429Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jacy">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Object对象">
+<meta name="twitter:description" content="###Object()Object本身当作工具方法使用时，可以将任意值转为对象。
+
+Object() // 返回一个空对象Object(undefined) // 返回一个空对象Object(null) // 返回一个空对象Object(1) // 等同于 new Number(1)Object(‘foo’) // 等同于 new String(‘foo’)Object(true) // 等同于">
   
     <link rel="alternative" href="/atom.xml" title="Jacy" type="application/atom+xml">
   
@@ -190,9 +197,7 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap">
-  
-    <article id="post-Object对象" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Object对象" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2015/07/31/Object对象/" class="article-date">
@@ -208,12 +213,23 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/31/Object对象/">Object对象</a>
+    <h1 class="article-title" itemprop="name">
+      Object对象
     </h1>
   
 
       </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -305,205 +321,62 @@
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/07/31/javascript小知识点/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">javascript小知识点</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
   
 </article>
 
 
-
-
-
-
-
-  
-    <article id="post-javascript小知识点" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/07/31/javascript小知识点/" class="article-date">
-  	<time datetime="2015-07-31T03:08:53.259Z" itemprop="datePublished">2015-07-31</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/31/javascript小知识点/">javascript小知识点</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>###标识符</p>
-<ul>
-<li>中文是合法的标识符，可以用作变量名。</li>
-<li>JavaScript有一些保留字，不能用作标识符：arguments、break、case、catch、class、const、continue、debugger、default、delete、do、else、enum、eval、export、extends、false、finally、for、function、if、implements、import、in、instanceof、interface、let、new、null、package、private、protected、public、return、static、super、switch、this、throw、true、try、typeof、var、void、while、with、yield。</li>
-<li>Infinity、NaN、undefined虽然不是保留字，但是因为具有特别含义，也不应该用作标识符。</li>
-<li>JavaScript的标识名区分大小写，所以undefined和null不同于Undefined和Null（或者其他仅仅大小写不同的词形），后者只是普通的变量名。</li>
-</ul>
-<p>###typeof运算符<br>undefined返回undefined    利用这一点，typeof可以用来检查一个没有声明的变量，而不报错。如：</p>
-<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">v</span><br><span class="line"><span class="regexp">//</span> <span class="attribute">ReferenceError</span>: v <span class="keyword">is</span> <span class="keyword">not</span> defined</span><br><span class="line"><span class="keyword">typeof</span> v</span><br><span class="line"><span class="regexp">//</span> <span class="string">"undefined"</span></span><br><span class="line"><span class="regexp">//</span> <span class="string">"undefined"</span></span><br></pre></td></tr></table></figure>
-<p>实际编程中，这个特点通常用在判断语句:<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误的写法：</span></span><br><span class="line"><span class="tag">if</span> (v)&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ReferenceError: v is not defined</span></span><br><span class="line"><span class="comment">// 正确的写法：</span></span><br><span class="line"><span class="tag">if</span> (typeof v === <span class="string">"undefined"</span>)&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>###instanceof运算符<br>既然typeof对数组（array）和对象（object）的显示结果都是object，那么怎么区分它们呢？instanceof运算符可以做到:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line">o <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// false</span></span><br><span class="line">a <span class="keyword">instanceof</span> <span class="built_in">Array</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
-<p>###Boolean（）<br>以下六个值的转化结果为false，其他的值全部为true<br>undefined<br>null<br>-0<br>+0<br>NaN<br>‘’（空字符串）</p>
-<blockquote>
-<p>Boolean(undefined) // false<br>Boolean(null) // false<br>Boolean(0) // false<br>Boolean(NaN) // false<br>Boolean(‘’) // false</p>
-</blockquote>
-<p>###javascript自动添加分号<br>如果一行的起首是“自增”（++）或“自减”（–）运算符，则它们的前面会自动添加分号。<br>如果continue、break、return和throw这四个语句后面，直接跟换行符，则会自动添加分号。这意味着，如果return语句返回的是一个对象的字面量，起首的大括号一定要写在同一行，否则得不到预期结果。</p>
-<p>###原始类型值的转换规则<br>    数值：转换后还是原来的值。</p>
-<pre><code>字符串：如果可以被解析为数值，则转换为相应的数值，否则得到NaN。空字符串转为<span class="number">0</span>。
-
-布尔值：<span class="literal">true</span>转成<span class="number">1</span>，<span class="literal">false</span>转成<span class="number">0</span>。
-
-undefined：转成NaN。
-
-null：转成<span class="number">0</span>。
-</code></pre><p>###Number函数和parseInt函数<br>Number函数和parseInt函数区别主要在于parseInt逐个解析字符，而Number函数整体转换字符串的类型。另外，Number会忽略八进制的前导0，而parseInt不会。</p>
-<blockquote>
-<p>parseInt(‘011’) // 9<br>parseInt(‘42 cats’) // 42<br>parseInt(‘0xcafebabe’) // 3405691582<br>Number(‘011’) // 11<br>Number(‘42 cats’) // NaN<br>Number(‘0xcafebabe’) // 3405691582</p>
-</blockquote>
-<p>###加法运算符<br>加法运算符的类型转换，可以分成三种情况讨论:<br>（1）运算子之中存在字符串<br>两个运算子之中，只要有一个是字符串，则另一个不管是什么类型，都会被自动转为字符串，然后执行字符串连接运算<br>（2）两个运算子都为数值或布尔值<br>这种情况下，执行加法运算，布尔值转为数值（true为1，false为0）<br>（3）运算子之中存在对象<br>运算子之中存在对象（或者准确地说，存在非原始类型的值），则先调用该对象的valueOf方法。如果返回结果为原始类型的值，则运用上面两条规则；否则继续调用该对象的toString方法，对其返回值运用上面两条规则。</p>
-<blockquote>
-<p>1 + {a:1}<br>// “1[object Object]”</p>
-</blockquote>
-<p>对象{a:1}的valueOf方法，返回的就是这个对象的本身，因此接着对它调用toString方法。({a:1}).toString()默认返回字符串”[object Object]”，所以最终结果就是字符串“1[object Object]”。</p>
-<p>有趣的是，如果更换上面代码的运算次序，就会得到不同的值：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;a:<span class="number">1</span>&#125; + <span class="number">1</span></span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure></p>
-<p>原来此时，JavaScript引擎不将{a:1}视为对象，而是视为一个代码块，这个代码块没有返回值，所以被忽略。因此上面的代码，实际上等同于 {a:1};+1 ，所以最终结果就是1。为了避免这种情况，需要对{a:1}加上括号。</p>
-<p>###版权符号</p>
-<blockquote>
-<p>\XXX 用三位八进制数（0到377）代表一些特殊符号，比如\251表示版权符号。<br>\xXX 用两位十六进制数（00到FF）代表一些特殊符号，比如\xA9表示版权符号。<br>\uXXXX 用四位十六进制的Unicode编号代表某个字符，比如\u00A9表示版权符号。</p>
-</blockquote>
-<p>###Object.prototype.toString.call方法</p>
-<blockquote>
-<p>Object.prototype.toString.call(2) // “[object Number]”<br>Object.prototype.toString.call(‘’) // “[object String]”<br>Object.prototype.toString.call(true) // “[object Boolean]”<br>Object.prototype.toString.call(undefined) // “[object Undefined]”<br>Object.prototype.toString.call(null) // “[object Null]”<br>Object.prototype.toString.call(Math) // “[object Math]”<br>Object.prototype.toString.call({}) // “[object Object]”<br>Object.prototype.toString.call([]) // “[object Array]”</p>
-</blockquote>
-<p>可以利用这个特性，写出一个比typeof运算符更准确的类型判断函数：<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="class"><span class="keyword">type</span> =</span> function (o)&#123;</span><br><span class="line">    <span class="keyword">var</span> s = <span class="type">Object</span>.prototype.toString.call(o);</span><br><span class="line">        <span class="keyword">return</span> s.<span class="keyword">match</span>(/\[<span class="class"><span class="keyword">object</span> (</span>.*?)\]/)[<span class="number">1</span>].toLowerCase();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span>&#123;&#125;); <span class="comment">// "object"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span>[]); <span class="comment">// "array"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span><span class="number">5</span>); <span class="comment">// "number"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span><span class="literal">null</span>); <span class="comment">// "null"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span>); <span class="comment">// "undefined"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span>/abcd/); <span class="comment">// "regex"</span></span><br><span class="line"><span class="class"><span class="keyword">type</span>(</span><span class="keyword">new</span> <span class="type">Date</span>()); <span class="comment">// "date"</span></span><br></pre></td></tr></table></figure></p>
-<p>在上面这个type函数的基础上，还可以加上专门判断某种类型数据的方法:<br><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> [<span class="string">'Null'</span>,</span><br><span class="line"> <span class="string">'Undefined'</span>,</span><br><span class="line"> <span class="string">'Object'</span>,</span><br><span class="line"> <span class="string">'Array'</span>,</span><br><span class="line"> <span class="string">'String'</span>,</span><br><span class="line"> <span class="string">'Number'</span>,</span><br><span class="line"> <span class="string">'Boolean'</span>,</span><br><span class="line"> <span class="string">'Function'</span>,</span><br><span class="line"> <span class="string">'RegExp'</span>,</span><br><span class="line"> <span class="string">'Element'</span>,</span><br><span class="line"> <span class="string">'NaN'</span>,</span><br><span class="line"> <span class="string">'Infinite'</span></span><br><span class="line">].forEach(<span class="function"><span class="keyword">function</span> <span class="params">(t)</span></span> &#123;</span><br><span class="line">    <span class="built_in">type</span>[<span class="string">'is'</span> + t] = <span class="function"><span class="keyword">function</span> <span class="params">(o)</span></span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">type</span>(o) === t.toLowerCase();</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">type</span>.isObject(&#123;&#125;); // <span class="keyword">true</span></span><br><span class="line"><span class="built_in">type</span>.isNumber(NaN); // <span class="keyword">false</span></span><br><span class="line"><span class="built_in">type</span>.isElement(document.createElement(<span class="string">'div'</span>)); // <span class="keyword">true</span></span><br><span class="line"><span class="built_in">type</span>.isRegExp(/abc/); // <span class="keyword">true</span></span><br></pre></td></tr></table></figure></p>
-<p>###Object.defineProperty方法<br>Object.defineProperty方法接受三个参数，第一个是属性所在的对象，第二个是属性名（它应该是一个字符串），第三个是属性的描述对象。比如，新建一个o对象，并定义它的p属性，可以这样写：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var o = Object.defineProperty(&#123;&#125;, <span class="string">"p"</span>, &#123;</span><br><span class="line">        value: <span class="number">123</span>,</span><br><span class="line">        writable: <span class="literal">false</span>,</span><br><span class="line">        enumerable: <span class="literal">true</span>,</span><br><span class="line">        configurable: <span class="literal">false</span></span><br><span class="line">&#125;);</span><br><span class="line">o.p</span><br><span class="line"><span class="comment">// 123</span></span><br><span class="line">o.p = <span class="number">246</span>;</span><br><span class="line">o.p</span><br><span class="line"><span class="comment">// 123</span></span><br><span class="line"><span class="comment">// 因为writable为false，所以无法改变该属性的值</span></span><br></pre></td></tr></table></figure></p>
-<p>如果一次性定义或修改多个属性，可以使用Object.defineProperties方法：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = Object.defineProperties(&#123;&#125;, &#123;</span><br><span class="line">        p1: &#123; value: <span class="number">123</span>, enumerable: <span class="literal">true</span> &#125;,</span><br><span class="line">        p2: &#123; value: <span class="string">"abc"</span>, enumerable: <span class="literal">true</span> &#125;,</span><br><span class="line">        p3: &#123; <span class="keyword">get</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.p1+<span class="keyword">this</span>.p2 &#125;,</span><br><span class="line">              enumerable:<span class="literal">true</span>,</span><br><span class="line">              configurable:<span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;);</span><br><span class="line">o.p1 <span class="comment">// 123</span></span><br><span class="line">o.p2 <span class="comment">// "abc"</span></span><br><span class="line">o.p3 <span class="comment">// "123abc"</span></span><br></pre></td></tr></table></figure></p>
-<p>上面代码中的p3属性，定义了取值函数get。这时需要注意的是，一旦定义了取值函数get（或存值函数set），就不能将writable设为true，或者同时定义value属性，否则会报错。</p>
-<p>###Object.getOwnPropertyNames方法<br>Object.getOwnPropertyNames方法返回直接定义在某个对象上面的全部属性的名称，而不管该属性是否可枚举。<br>需要注意的是，当使用var命令声明变量时，变量的configurable为false。<br>而不使用var命令声明变量时（或者使用属性赋值的方式声明变量），变量的可配置性为true。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
 
-
-
-
-
-  
-    <article id="post-一周培训心得" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/07/30/一周培训心得/" class="article-date">
-  	<time datetime="2015-07-30T13:39:21.309Z" itemprop="datePublished">2015-07-30</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/30/一周培训心得/">一周培训心得</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##Git<br>使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：<br>git reset 回退版本<br>git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100<br>git log 查看，git log – pretty=oneline简洁查看<br>git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别<br>git checkout – file 可以丢弃工作区的修改（file为所丢弃修改文档名）<br>用rm命令删除工作区的file。   如rm test.txt<br>用命令git rm删掉版本库里的file。 如git rm test.txt<br>使用命令git remote add origin git@server-name:path/repo-name.git可以关联一个远程库<br>关联后，使用命令git push -u origin master第一次推送master分支的所有内容；<br>此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改;<br>git clone git@github.com:michaelliao/gitskills.git可以克隆一个本地库<br>git checkout -b dev创建dev分支，加上-b参数表示创建并切换，相当于<br>git branch dev<br>git checkout dev<br>git merge命令用于合并指定分支到当前分支<br>git branch -d dev删除dev分支<br>git log –graph命令可以看到分支合并图<br>git log –graph –pretty=oneline –abbrev-commit查看分支合并情况<br>当写程序过程中需要离开当前写的程序，git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作<br>git stash list命令查看工作现场<br>需要恢复有两个办法：<br>1.用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；<br>2.用git stash pop，恢复的同时把stash内容也删了<br>可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：git stash apply stash@{0}<br>用git remote查看远程仓库的信息<br>用git remote -v可以显示更详细的信息<br>推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：git push origin master。如果要推送其他分支，比如dev，就改成:git push origin dev<br>创建远程origin的dev分支到本地，于是用这个命令创建本地dev分支:git checkout -b dev origin/dev<br>如果推送失败，可能是因为小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送<br>如果git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：$ git branch –set-upstream dev origin/dev</p>
-<hr>
-<p>##HTML &amp; CSS</p>
-<p>###1.样式分离<br>Html代码与Css代码分离，通过样式分离可以方便我们修改，当我们修改了HTML文件后，我们可以不用重新修改CSS文件来适应新的HTML文件。</p>
-<p>###2.CSS优先级<br>优先级逐级增加的选择器列表:<br>    通用选择器<br>    元素(类型)选择器<br>    类选择器<br>    属性选择器<br>    伪类<br>    ID 选择器<br>    内联样式</p>
-<p>###3.CSS 代码书写规范<br>书写顺序：<br>1.位置属性(position, top, right, z-index, display, float等)<br>2.大小(width, height, padding, margin)<br>3.文字系列(font, line-height, letter-spacing, color- text-align等)<br>4.背景(background, border等)<br>5.其他(animation, transition等)</p>
-<p>使用CSS缩写，减少代码量：<br>1.CSS有些属性是可以缩写的，比如padding,margin,font等等，这样精简代码同时又能提高用户的阅读体验。<br>2.去掉小数点前的0 如font-size:0.8em改成font-size:.8em</p>
-<p>简写命名：navigation –&gt; nav</p>
-<p>16进制颜色代码缩写:#eebbcc –&gt; #ebc</p>
-<p>连字符CSS选择器命名规范:<br>1.长名称或词组可以使用中横线来为选择器命名。<br>2.不能用“_”下划线来命名CSS选择器，为什么呢？<br>    一些浏览器已经不允许使用下划线来命名CSS选择器（就是不兼容）；<br>    能良好区分JavaScript变量命名.</p>
-<p>不要随意使用id:<br>id在JS是唯一的，不能多次使用，而使用class类选择器却可以重复使用，另外id的优先级优先与class，所以id应该按需使用，而不能滥用。    </p>
-<p>为选择器添加状态前缀:<br>如.withdrawal –&gt; .iswithdrawal</p>
-<p>常用CSS命名规则：<br>头：header<br>内容：content/container<br>尾：footer<br>导航：nav<br>侧栏：sidebar<br>栏目：column<br>页面外围控制整体佈局宽度：wrapper<br>左右中：left right center<br>登录条：loginbar<br>标志：logo<br>广告：banner<br>页面主体：main<br>热点：hot<br>新闻：news<br>下载：download<br>子导航：subnav<br>菜单：menu<br>子菜单：submenu<br>搜索：search<br>友情链接：friendlink<br>页脚：footer<br>版权：copyright<br>滚动：scroll<br>内容：content<br>标签：tags<br>文章列表：list<br>提示信息：msg<br>小技巧：tips<br>栏目标题：title<br>加入：joinus<br>指南：guild<br>服务：service<br>注册：regsiter<br>状态：status<br>投票：vote<br>合作伙伴：partner</p>
-<p>##JAVASCRIPT<br>Javascript是一门单线程的语言。若是按照代码顺序执行，假如有的代码执行消耗的时间长，那么后面的代码得等待它们执行完才能执行，这就造成了效率低下。<br>Javascript的执行机制为了解决它的单线程问题，类似于创建了其他的线程执行代码，当检测到需要耗费时间去执行的代码时，会将这部分代码拉出来单独执行，而主线程继续执行后面的代码，等到主线程执行完后再将拉出去的代码，按照队列一个一个回到主线程执行，这样可以增大运行的效率。</p>
-<p>##HTML5 &amp; CSS3</p>
-<p>###HTML5<br>HTML5可以实现网页中所需的音频、视频和拖放。<br>可查看 <a href="http://www.w3school.com.cn/html5/" target="_blank" rel="external">http://www.w3school.com.cn/html5/</a> 学习</p>
-<p>###CSS3<br>CSS3引入了Transition，使的原先瞬间变化的东西变得有一个过渡的过程，也就是有了动画的效果，让人看起来更舒服。<br>CSS3可以编写较多的动画效果，自己编写动画执行时间，是美化网页的好工具。<br>可查看 <a href="http://www.w3school.com.cn/css3/index.asp" target="_blank" rel="external">http://www.w3school.com.cn/css3/index.asp</a> 学习</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Object对象" data-title="Object对象" data-url="http://yoursite.com/2015/07/31/Object对象/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
 
 
 
 
-
-
-
-  
-  
 </div>
       <footer id="footer">
   <div class="outer">
@@ -527,8 +400,8 @@ null：转成<span class="number">0</span>。
 		fancybox: true,
 		mathjax: true,
 		animate: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
