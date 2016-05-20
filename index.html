@@ -192,6 +192,122 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Node模块机制" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/05/20/Node模块机制/" class="article-date">
+  	<time datetime="2016-05-20T09:06:09.309Z" itemprop="datePublished">2016-05-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Node模块机制">Node模块机制</h1><p>标签（空格分隔）： 经验</p>
+<hr>
+<pre><code><span class="keyword">js</span>规范缺陷：
+      没有模块系统；
+      标准库较少；
+      没有标准接口；
+      缺乏包管理系统。
+</code></pre><p>CommonJS规范提出弥补当前javascript没有标准的缺陷。</p>
+<p>CommonJS模块引用：require()</p>
+<p>上下文提供了exports对象用于导出当前模块的方法或变量：</p>
+<pre><code><span class="comment">//main.js</span>
+exports.add = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+
+}
+<span class="comment">//program.js</span>
+<span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);
+exports.increment = <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>{
+    <span class="keyword">return</span> math.add(val,<span class="number">1</span>);
+}
+</code></pre><p>错误：</p>
+<pre><code><span class="keyword">exports</span> = <span class="function"><span class="keyword">function</span><span class="params">()</span><span class="comment">{
+    ...
+}</span>;</span>
+</code></pre><p>exports对象是通过形参方式传入，直接赋值会改变形参的引用，但不能改变作用域外的值</p>
+<pre><code>var change = <span class="function"><span class="keyword">function</span><span class="params">(a)</span> {</span>
+    a = <span class="number">100</span>;
+    console.<span class="built_in">log</span><span class="params">(a)</span>; <span class="comment">//100</span>
+};
+var a = <span class="number">10</span>;
+change<span class="params">(a)</span>;
+console.<span class="built_in">log</span><span class="params">(a)</span>; <span class="comment">//10</span>
+</code></pre><p>如果要达到require引入一个类的效果，赋值给module.exports对象，这个迂回的方案不改变形参的作用。</p>
+<p>node模块分为node提供的核心模块跟用户编写的文件模块。<br>核心模块在node源代码编译时已编译，node启动时即加入内存，省去文件定位和编译执行步骤，在路径分析中优先判断，故加载速度最快。<br>文件模块运行时动态加载，需完整路径分析、文件定位、编译执行过程，速度比较慢。</p>
+<p>不论核心模块还是文件模块，对相同模块二次加载一律缓存优先，这是第一优先级的，不同之处在与核心模块的缓存检查优先于文件模块的。</p>
+<p>不可以加载一个与核心模块标识符相同的自定义模块。</p>
+<p>模块路径是node在定位文件模块的具体文件时制定的查找策略，其类似于javascript的原型链或者作用域链，先在当前文件目录下的node_modules目录查找，然后沿路径向上逐级递归，这是自定义模块加载速度是最慢的原因。</p>
+<p>require()在分析标识符的过程中，会出现标识符中不包含文件扩展名的情况，这时按照.js,.json,.node次序查找。</p>
+<p>.js文件：通过fs模块同步读取文件后编译执行；<br>.node文件：是c/c++编写的扩展文件，通过dlopen()方法加载最后编译生成的文件；<br>.json文件：通过fs模块同步读取文件后，用JSON.parse()解析返回结果；<br>其余扩展名文件：当作js文件载入。</p>
+<p>编译过程中，node会对js文件内容进行包装：</p>
+<pre><code>(<span class="function"><span class="keyword">function</span>(<span class="params">exports,requiere,module,_filename,_dirname</span>)</span>{
+    <span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);
+    exports.area = <span class="function"><span class="keyword">function</span>(<span class="params">radius</span>) </span>{
+        <span class="keyword">return</span> <span class="built_in">Math</span>.PI*radius*radius;
+     };
+});
+</code></pre><p>这样每个模块文件之间进行作用域隔离，不污染全局变量。</p>
+<p>##<strong>包与npm</strong><br>在一个具体的包目录下执行npm test时，会运行test指向的脚本。<br>npm init 生成package.json文件<br>npm adduser 注册账号，npm必须要使用仓库账号才能将包发布到仓库中<br>npm publish . 上传包<br>npm owner 管理包的所有者（npm owner ls/npm owner add/npm owner rm）<br>npm ls 这个命令可以分析当前路径下可以通过模块路径找到的所有包</p>
+<p>包质量和安全问题：<br>口碑效应，在npm模块首页依赖榜可以说明模块的质量和可靠性；<br>GitHub中模块项目的观察者数量和分支数量也能侧面反应其可靠性和流行度；<br>包的测试用例，没有单元测试和文档的包基本上是无法被信任的。</p>
+<p>AMD规范：</p>
+<pre><code>define([<span class="string">'dep1'</span>,<span class="string">'dep2'</span>],<span class="function"><span class="keyword">function</span><span class="params">(dep1,dep2)</span></span>{
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span></span>{};
+});
+</code></pre><p>需要在声明时指定所有依赖<br>CMD规范：</p>
+<pre><code>define(<span class="function"><span class="keyword">function</span><span class="params">(<span class="keyword">require</span>,exports,<span class="keyword">module</span>)</span><span class="comment">{
+    //...
+}</span>);</span>
+</code></pre><p>require,exports,module通过形参传递给模块，在需要依赖模块时，随时调用require()引用</p>
+<p>兼容多种模块规范<br>将hello()方法定义到不同环境，兼容node，AMD，CMD及常见浏览器环境：</p>
+<pre><code>;(<span class="function"><span class="keyword">function</span>(<span class="params">name,definition</span>)</span>{
+    <span class="comment">//检测上下文环境是否为AMD或CMD</span>
+    <span class="keyword">var</span> hasDefine = <span class="keyword">typeof</span> define === <span class="string">'function'</span>,
+    <span class="comment">//检测上下文环境是否为node</span>
+    hasExports = <span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports;
+    <span class="keyword">if</span>(hasDefine){
+          <span class="comment">//AMD环境或CMD环境</span>
+          define(definition);
+     }<span class="keyword">else</span> <span class="keyword">if</span>(hasExports){
+          <span class="comment">//定义为普通node模块</span>
+          <span class="built_in">module</span>.exports = definition();
+     }<span class="keyword">else</span> {
+          <span class="comment">//将模块执行结果挂在window变量中</span>
+          <span class="keyword">this</span>[name] = definition();
+     }
+})(<span class="string">'hello'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+    <span class="keyword">var</span> hello = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{};
+    <span class="keyword">return</span> hello;
+});
+</code></pre>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-游" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
