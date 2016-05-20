@@ -35,7 +35,7 @@ exports.add = function() {
 
 }
 //progr">
-<meta property="og:updated_time" content="2016-05-20T09:18:12.005Z">
+<meta property="og:updated_time" content="2016-05-20T09:48:36.265Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node模块机制">
 <meta name="twitter:description" content="js规范缺陷：
@@ -308,7 +308,7 @@ console.<span class="built_in">log</span><span class="params">(a)</span>; <span 
      };
 });
 </code></pre><p>这样每个模块文件之间进行作用域隔离，不污染全局变量。</p>
-<p>##<strong>包与npm</strong><br>在一个具体的包目录下执行npm test时，会运行test指向的脚本。<br>npm init 生成package.json文件<br>npm adduser 注册账号，npm必须要使用仓库账号才能将包发布到仓库中<br>npm publish . 上传包<br>npm owner 管理包的所有者（npm owner ls/npm owner add/npm owner rm）<br>npm ls 这个命令可以分析当前路径下可以通过模块路径找到的所有包</p>
+<h2 id="包与npm"><strong>包与npm</strong></h2><p>在一个具体的包目录下执行npm test时，会运行test指向的脚本。<br>npm init 生成package.json文件<br>npm adduser 注册账号，npm必须要使用仓库账号才能将包发布到仓库中<br>npm publish . 上传包<br>npm owner 管理包的所有者（npm owner ls/npm owner add/npm owner rm）<br>npm ls 这个命令可以分析当前路径下可以通过模块路径找到的所有包</p>
 <p>包质量和安全问题：<br>口碑效应，在npm模块首页依赖榜可以说明模块的质量和可靠性；<br>GitHub中模块项目的观察者数量和分支数量也能侧面反应其可靠性和流行度；<br>包的测试用例，没有单元测试和文档的包基本上是无法被信任的。</p>
 <p>AMD规范：</p>
 <pre><code>define([<span class="string">'dep1'</span>,<span class="string">'dep2'</span>],<span class="function"><span class="keyword">function</span><span class="params">(dep1,dep2)</span></span>{
