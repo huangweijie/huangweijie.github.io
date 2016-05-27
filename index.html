@@ -192,6 +192,82 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-linux ubuntu安装iNode" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/05/27/linux ubuntu安装iNode/" class="article-date">
+  	<time datetime="2016-05-27T05:04:57.000Z" itemprop="datePublished">2016-05-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/27/linux ubuntu安装iNode/">linux ubuntu安装iNode</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code>本来在宿舍只需要使用舍友“外坏”就可以在ubuntu上安心上网的，可惜最近舍友“外坏”开不流畅，而且校园网也炸炸的，那么就决定在ubuntu上装好iNode自己来开网了，装iNode一天游开始了。
+</code></pre><p>在广工网管中心下到了linux版本的iNode包回来解压后，先</p>
+<pre><code><span class="keyword">cd</span> iNode解压包目录
+./install.<span class="keyword">sh</span>  安装iNode
+./iNodeClient 运行iNode
+</code></pre><p>接下来就是看它抛出的错误了，我估摸着肯定会少这少那，反正我是。查阅了很多资料，似乎是跟系统64位而这个iNode只是32位应用有关，于是要解决它的库问题。</p>
+<pre><code><span class="tag">sudo</span> <span class="tag">apt-get</span> <span class="tag">install</span> <span class="tag">lib32z1</span> <span class="tag">lib32ncurses5</span> <span class="tag">lib32bz2-1</span><span class="class">.0</span> <span class="tag">libjpeg62</span><span class="pseudo">:i386</span> <span class="tag">libpangoxft-1</span><span class="class">.0-0</span><span class="pseudo">:i386</span> <span class="tag">libpangox-1</span><span class="class">.0-0</span><span class="pseudo">:i386</span> <span class="tag">libsm6</span><span class="pseudo">:i386</span> <span class="tag">libidn11</span><span class="pseudo">:i386</span>
+</code></pre><p>这里需要注意i386，i386通常被用来作为对Intel（英特尔）32位微处理器的统称。后续缺少的东西也是要注意加这个，不然没用。<br>装好这些后基本上没什么问题了，要是还是有缺什么就找什么补什么吧。下面这个问题就神奇了。</p>
+<pre><code>libtiff.so<span class="number">.3</span>: cannot <span class="built_in">open</span> shared object <span class="built_in">file</span>: No such <span class="built_in">file</span> <span class="operator">or</span> <span class="built_in">directory</span>
+</code></pre><p>但是自己查找的时候发现还是有这么个文件的，其实并不是因为缺少了这个文件，而是ubuntu中这个库文件升级了，引用不到。</p>
+<pre><code><span class="keyword">cd</span> /usr/lib/i386-linux-gnu
+<span class="keyword">ls</span> libtiff*
+</code></pre><p>输入以上命令查看本机的libtiff的版本是多少的，我的是5的那就拿5作事例。</p>
+<pre><code>cd /usr/lib/i386-linux-gnu/ cd到这个目录
+sudo rm libtiff<span class="class">.so</span>.<span class="number">3</span> 删除原有的libtiff<span class="class">.so</span>.<span class="number">3</span>
+sudo ln -s /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span class="number">5</span> /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span class="number">3</span> 创建一个libtiff<span class="class">.so</span>.<span class="number">3</span>是链接到libtiff<span class="class">.so</span>.<span class="number">5</span>的
+</code></pre><p>然后这块基本就没什么问题了。接下来我们再次</p>
+<pre><code>./iNodeClient
+</code></pre><p>如果有<code>Gtk-Message: Failed to load module &quot;canberra-gtk-module&quot;</code>出现</p>
+<pre><code>sudo apt-get install libcanberra-gtk-<span class="class"><span class="keyword">module</span>:<span class="title">i386</span></span>
+</code></pre><p>同样留意i386，如果有类似的出现，查找相关命令下载即可<br>当执行<code>./iNodeClient</code>出现客户端界面就基本上完成安装啦</p>
+<p>看到客户端的界面，选择左上角的新建添加链接<br><img src="http://img1.ph.126.net/GZknSWgmRimiJ3kge7FBaA==/647955396405058911.jpg" alt="界面"><br>输入用户名和密码，按照下图点击选项，确定保存<br><img src="http://img3.ph.126.net/ZT9_EE9UGU5fLlqLSkzCvQ==/993325192829036033.jpg" alt="创建连接"><br>新的链接已经建立好了，选中链接，点击上方的“连接”按钮开始连接<br><img src="http://img4.ph.126.net/SAP09r3GcPMaNdDDFMyvMg==/2710041075787328544.jpg" alt="连接"><br>看到“You have passed the identity authentication”的字样时就表示认证成功，就可以上网啦！</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Node模块机制" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
