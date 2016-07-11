@@ -3,36 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>linux ubuntu安装iNode | Jacy</title>
+  <title>异步I/O | Jacy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本来在宿舍只需要使用舍友“外坏”就可以在ubuntu上安心上网的，可惜最近舍友“外坏”开不流畅，而且校园网也炸炸的，那么就决定在ubuntu上装好iNode自己来开网了，装iNode一天游开始了。
-在广工网管中心下到了linux版本的iNode包回来解压后，先
-cd iNode解压包目录
-./install.sh  安装iNode
-./iNodeClient 运行iNode
-接下来就是看它抛出的错">
+  <meta name="description" content="异步I/O与非阻塞I/O
+阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）
+轮询技术
+read：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux ubuntu安装iNode">
-<meta property="og:url" content="http://yoursite.com/2016/05/27/linux ubuntu安装iNode/index.html">
+<meta property="og:title" content="异步I/O">
+<meta property="og:url" content="http://yoursite.com/2016/07/11/异步I-O/index.html">
 <meta property="og:site_name" content="Jacy">
-<meta property="og:description" content="本来在宿舍只需要使用舍友“外坏”就可以在ubuntu上安心上网的，可惜最近舍友“外坏”开不流畅，而且校园网也炸炸的，那么就决定在ubuntu上装好iNode自己来开网了，装iNode一天游开始了。
-在广工网管中心下到了linux版本的iNode包回来解压后，先
-cd iNode解压包目录
-./install.sh  安装iNode
-./iNodeClient 运行iNode
-接下来就是看它抛出的错">
-<meta property="og:image" content="http://img1.ph.126.net/GZknSWgmRimiJ3kge7FBaA==/647955396405058911.jpg">
-<meta property="og:image" content="http://img3.ph.126.net/ZT9_EE9UGU5fLlqLSkzCvQ==/993325192829036033.jpg">
-<meta property="og:image" content="http://img4.ph.126.net/SAP09r3GcPMaNdDDFMyvMg==/2710041075787328544.jpg">
-<meta property="og:updated_time" content="2016-05-27T05:06:58.819Z">
+<meta property="og:description" content="异步I/O与非阻塞I/O
+阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）
+轮询技术
+read：">
+<meta property="og:updated_time" content="2016-07-11T08:36:36.881Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux ubuntu安装iNode">
-<meta name="twitter:description" content="本来在宿舍只需要使用舍友“外坏”就可以在ubuntu上安心上网的，可惜最近舍友“外坏”开不流畅，而且校园网也炸炸的，那么就决定在ubuntu上装好iNode自己来开网了，装iNode一天游开始了。
-在广工网管中心下到了linux版本的iNode包回来解压后，先
-cd iNode解压包目录
-./install.sh  安装iNode
-./iNodeClient 运行iNode
-接下来就是看它抛出的错">
+<meta name="twitter:title" content="异步I/O">
+<meta name="twitter:description" content="异步I/O与非阻塞I/O
+阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）
+轮询技术
+read：">
   
     <link rel="alternative" href="/atom.xml" title="Jacy" type="application/atom+xml">
   
@@ -209,11 +200,11 @@ cd iNode解压包目录
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-linux ubuntu安装iNode" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-异步I-O" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/05/27/linux ubuntu安装iNode/" class="article-date">
-  	<time datetime="2016-05-27T05:04:57.000Z" itemprop="datePublished">2016-05-27</time>
+      <a href="/2016/07/11/异步I-O/" class="article-date">
+  	<time datetime="2016-07-11T08:36:36.889Z" itemprop="datePublished">2016-07-11</time>
 </a>
     </div>
   
@@ -226,7 +217,7 @@ cd iNode解压包目录
         
   
     <h1 class="article-title" itemprop="name">
-      linux ubuntu安装iNode
+      异步I/O
     </h1>
   
 
@@ -246,28 +237,19 @@ cd iNode解压包目录
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>本来在宿舍只需要使用舍友“外坏”就可以在ubuntu上安心上网的，可惜最近舍友“外坏”开不流畅，而且校园网也炸炸的，那么就决定在ubuntu上装好iNode自己来开网了，装iNode一天游开始了。
-</code></pre><p>在广工网管中心下到了linux版本的iNode包回来解压后，先</p>
-<pre><code><span class="keyword">cd</span> iNode解压包目录
-./install.<span class="keyword">sh</span>  安装iNode
-./iNodeClient 运行iNode
-</code></pre><p>接下来就是看它抛出的错误了，我估摸着肯定会少这少那，反正我是。查阅了很多资料，似乎是跟系统64位而这个iNode只是32位应用有关，于是要解决它的库问题。</p>
-<pre><code><span class="tag">sudo</span> <span class="tag">apt-get</span> <span class="tag">install</span> <span class="tag">lib32z1</span> <span class="tag">lib32ncurses5</span> <span class="tag">lib32bz2-1</span><span class="class">.0</span> <span class="tag">libjpeg62</span><span class="pseudo">:i386</span> <span class="tag">libpangoxft-1</span><span class="class">.0-0</span><span class="pseudo">:i386</span> <span class="tag">libpangox-1</span><span class="class">.0-0</span><span class="pseudo">:i386</span> <span class="tag">libsm6</span><span class="pseudo">:i386</span> <span class="tag">libidn11</span><span class="pseudo">:i386</span>
-</code></pre><p>这里需要注意i386，i386通常被用来作为对Intel（英特尔）32位微处理器的统称。后续缺少的东西也是要注意加这个，不然没用。<br>装好这些后基本上没什么问题了，要是还是有缺什么就找什么补什么吧。下面这个问题就神奇了。</p>
-<pre><code>libtiff.so<span class="number">.3</span>: cannot <span class="built_in">open</span> shared object <span class="built_in">file</span>: No such <span class="built_in">file</span> <span class="operator">or</span> <span class="built_in">directory</span>
-</code></pre><p>但是自己查找的时候发现还是有这么个文件的，其实并不是因为缺少了这个文件，而是ubuntu中这个库文件升级了，引用不到。</p>
-<pre><code><span class="keyword">cd</span> /usr/lib/i386-linux-gnu
-<span class="keyword">ls</span> libtiff*
-</code></pre><p>输入以上命令查看本机的libtiff的版本是多少的，我的是5的那就拿5作事例。</p>
-<pre><code>cd /usr/lib/i386-linux-gnu/ cd到这个目录
-sudo rm libtiff<span class="class">.so</span>.<span class="number">3</span> 删除原有的libtiff<span class="class">.so</span>.<span class="number">3</span>
-sudo ln -s /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span class="number">5</span> /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span class="number">3</span> 创建一个libtiff<span class="class">.so</span>.<span class="number">3</span>是链接到libtiff<span class="class">.so</span>.<span class="number">5</span>的
-</code></pre><p>然后这块基本就没什么问题了。接下来我们再次</p>
-<pre><code>./iNodeClient
-</code></pre><p>如果有<code>Gtk-Message: Failed to load module &quot;canberra-gtk-module&quot;</code>出现</p>
-<pre><code>sudo apt-get install libcanberra-gtk-<span class="class"><span class="keyword">module</span>:<span class="title">i386</span></span>
-</code></pre><p>同样留意i386，如果有类似的出现，查找相关命令下载即可<br>当执行<code>./iNodeClient</code>出现客户端界面就基本上完成安装啦</p>
-<p>看到客户端的界面，选择左上角的新建添加链接<br><img src="http://img1.ph.126.net/GZknSWgmRimiJ3kge7FBaA==/647955396405058911.jpg" alt="界面"><br>输入用户名和密码，按照下图点击选项，确定保存<br><img src="http://img3.ph.126.net/ZT9_EE9UGU5fLlqLSkzCvQ==/993325192829036033.jpg" alt="创建连接"><br>新的链接已经建立好了，选中链接，点击上方的“连接”按钮开始连接<br><img src="http://img4.ph.126.net/SAP09r3GcPMaNdDDFMyvMg==/2710041075787328544.jpg" alt="连接"><br>看到“You have passed the identity authentication”的字样时就表示认证成功，就可以上网啦！</p>
+        <p><strong>异步I/O与非阻塞I/O</strong></p>
+<p>阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。<br>非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）</p>
+<p><strong>轮询技术</strong></p>
+<p>read：最原始，性能最低。通过重复调用检查I/O状态完成。在得到最终数据前，CPU一直耗在等待上。<br>select：改进成通过文件描述符上事件状态来判断。有一个较弱限制，通过一个1024长度数组来存储状态，最多可同时检查             1024个文件描述符。<br>poll：改进成通过链表存储，性能限制有所改善，跟select类似。<br>epoll：Linux下效率最高的I/O事件通知机制，在进入轮询时没有检查到I/O事件时进行休眠，直到事件发生唤醒。它真实利用了事件通知、执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率较高。<br>kqueue：该方案实现与epoll类似，不过它仅在FreeBSD系统下存在。</p>
+<p>轮询技术满足了非阻塞I/O确保获取完整数据的需求，但对于应用程序仍然算是同步，应用程序仍然需要等待I/O完全返回。</p>
+<p><strong>请求对象</strong></p>
+<p>从javascript发起调用到内核执行I/O操作的过渡过程中，存在一种中间产物，叫请求对象。<br>javascript调用-&gt;node核心模块-&gt;c++内建模块-&gt;通过libuv进行系统调用<br>libuv作为封装层，有两个平台的实现（win和unix），实际上调用了uv_fs_open()方法，在其调用过程中，创建了FSReqWrap对象，javascript层传入的参数和方法封装在这个请求对象中，回调函数则设置在这个对象的oncomplete_sym属性上。<br>请求对象是异步I/O过程的重要中间产物，所有状态都保存在这个对象，包括送入线程池等待执行及I/O操作完毕后的回调处理。</p>
+<p>小结<br>异步I/O：单线程、事件循环、观察者和I/O线程池。在Node中，javascript是单线程，node自身是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点是，除了用户代码无法并行执行外，所有I/O（磁盘I/O和网络I/O等）是可以并行起来的。</p>
+<p><strong>非I/O的异步API</strong></p>
+<p>立即异步执行：<br>setTimeout(function(){<br>    //<br>},0);<br>这种方法较浪费性能<br>process.nextTick(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行</p>
+<p>setImmediate(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行<br>process.nextTick()跟setImmediate()类似，但：<br>process.nextTick(function(){<br>    console.log(‘nextTick延迟执行’)；<br>})；<br>setImmediate(function(){<br>    console.log(‘setImmediate延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>nextTick延迟执行<br>setImmediate延迟执行<br>process.nextTick()中回调函数优先级高于setImmediate()。因为事件循环对观察者的检查有先后顺序，process.nextTick()属于idle观察者，setImmediate()属于check观察者。<br>每一轮循环检查中，idle观察者&gt;I/O观察者&gt;check观察者</p>
+<p>process.nextTick()的回调函数存在一个数组中，每轮循环全部执行完；<br>setImmediate()每轮只执行链表中的一个回调函数。</p>
+<p>事件驱动和高性能服务器<br>经典服务器模型：<br>同步式：一次处理一个请求，其余请求处于等待状态；<br>每进程/每请求：每个请求创建一个进程，可处理多个请求，但不具备扩展性，系统资源有限；<br>每线程/每请求：每个请求创建一个线程，可处理多个请求，线程比进程轻量，但每个线程也占内存，对于大型站点仍然不够。</p>
 
       
     </div>
@@ -277,18 +259,18 @@ sudo ln -s /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span c
     
 <nav id="article-nav">
   
-    <a href="/2016/07/11/异步I-O/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/07/11/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          异步I/O
+          Hello World
         
       </div>
     </a>
   
   
-    <a href="/2016/05/20/Node模块机制/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Node模块机制</div>
+    <a href="/2016/05/27/linux ubuntu安装iNode/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">linux ubuntu安装iNode</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -317,7 +299,7 @@ sudo ln -s /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span c
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="linux ubuntu安装iNode" data-title="linux ubuntu安装iNode" data-url="http://yoursite.com/2016/05/27/linux ubuntu安装iNode/"></div>
+	<div class="ds-thread" data-thread-key="异步I-O" data-title="异步I/O" data-url="http://yoursite.com/2016/07/11/异步I-O/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
