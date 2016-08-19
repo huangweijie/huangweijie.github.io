@@ -19,7 +19,7 @@
 一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.
 
 总结中秋佳节项目FE技术: 中秋活动采用vuejs框架,使用gulp">
-<meta property="og:updated_time" content="2016-08-19T15:34:19.607Z">
+<meta property="og:updated_time" content="2016-08-19T15:49:21.160Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我们家CSCWFE+总结">
 <meta name="twitter:description" content="CSCWFE
@@ -207,7 +207,7 @@
   
     <div class="article-meta">
       <a href="/2016/08/19/我们家CSCWFE+总结/" class="article-date">
-  	<time datetime="2016-08-19T15:34:27.318Z" itemprop="datePublished">2016-08-19</time>
+  	<time datetime="2016-08-19T15:49:29.868Z" itemprop="datePublished">2016-08-19</time>
 </a>
     </div>
   
@@ -245,14 +245,10 @@
 <p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
 </blockquote>
 <h2 id="总结">总结</h2><h3 id="中秋佳节">中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
-<ol>
-<li><p>由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
-</li>
-<li><p>样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
-</li>
-<li><p>逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
-</li>
-<li><p>routerjs</p>
+<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
+<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
+<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
+<p>4.routerjs</p>
 <pre><code><span class="string">"/receive"</span>: {
     component: receive
 },
@@ -266,10 +262,8 @@
 },
 
 /receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
-</code></pre></li>
-<li><p>background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
-</li>
-<li><p>cookie设置记录登录状态</p>
+</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
+<p>6.cookie设置记录登录状态</p>
 <pre><code><span class="keyword">var</span> setCookie = <span class="function"><span class="keyword">function</span>(<span class="params">name, value, expires, path, domain, secure</span>)</span>{
     <span class="keyword">var</span> cookieText = <span class="built_in">encodeURIComponent</span>(name) + <span class="string">"="</span> + <span class="built_in">encodeURIComponent</span>(value);
     <span class="keyword">var</span> cookieDate = <span class="keyword">new</span> <span class="built_in">Date</span>();
@@ -316,8 +310,7 @@
             },
         });
     }
-</code></pre></li>
-<li><p>验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
+</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
 <pre><code><span class="keyword">var</span> time = <span class="number">60</span>;
 <span class="keyword">var</span> timer;
 timer = setInterval(function(){
@@ -332,16 +325,18 @@ timer = setInterval(function(){
         <span class="keyword">event</span>.target.disabled = <span class="keyword">false</span>;
     }
 }, <span class="number">1000</span>);
-</code></pre></li>
-<li><p>变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
-</li>
-<li><p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.<br>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.<br>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
+</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
+<p>9.</p>
+<blockquote>
+<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
+<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
+<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
 <pre><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://res.wx.qq.com/open/js/jweixin-1.0.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 </code></pre><p>后还需要另外加入</p>
 <pre><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"https://res.wx.qq.com/open/js/jweixin-1.0.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.<br>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
-</li>
-</ol>
+</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
+<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
+</blockquote>
 
       
     </div>
