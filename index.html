@@ -196,7 +196,7 @@
   
     <div class="article-meta">
       <a href="/2016/08/19/我们家CSCWFE+总结/" class="article-date">
-  	<time datetime="2016-08-19T15:30:17.562Z" itemprop="datePublished">2016-08-19</time>
+  	<time datetime="2016-08-19T15:34:27.318Z" itemprop="datePublished">2016-08-19</time>
 </a>
     </div>
   
@@ -218,9 +218,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="CSCWFE">CSCWFE</h2><pre><code>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的<span class="exclamation_mark">!</span>
-一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.
-</code></pre><h2 id="总结">总结</h2><h3 id="中秋佳节">中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
+        <h2 id="CSCWFE">CSCWFE</h2><blockquote>
+<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
+<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
+</blockquote>
+<h2 id="总结">总结</h2><h3 id="中秋佳节">中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
 <ol>
 <li><p>由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
 </li>
@@ -243,7 +245,7 @@
 
 /receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
 </code></pre></li>
-<li><p>background,background-size:100%<br>100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
+<li><p>background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
 </li>
 <li><p>cookie设置记录登录状态</p>
 <pre><code><span class="keyword">var</span> setCookie = <span class="function"><span class="keyword">function</span>(<span class="params">name, value, expires, path, domain, secure</span>)</span>{
