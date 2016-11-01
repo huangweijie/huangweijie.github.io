@@ -192,6 +192,324 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-project总结" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/01/project总结/" class="article-date">
+  	<time datetime="2016-11-01T15:50:08.966Z" itemprop="datePublished">2016-11-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/01/project总结/">project总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>好久没有写博文了，这确实不是个好习惯，毕竟心得体会不会一直牢记心中。</p>
+<p>好了，如题，介绍下我的小项目了～</p>
+<p><strong>项目名称</strong>：A公司微信公众号上的官方</p>
+<p><strong>项目描述</strong>：用轻量级js=&gt;vuejs，通过gulp-webpack打包，部分内容切分出来另外用基本的html，css和js完成，为了使打包后的文件能较小，更加提高打开的性能，虽然路由使用了懒加载（做这个项目时vue-router的文档的懒加载会报错，具体解决办法见下文）。这个项目作为公司官网主要是展示公司的一些信息，比如公司介绍，公司的资讯，公司相关产品等</p>
+<p><strong>项目职责</strong>：前端开发，包括页面的实现还有跟后台的接口对接调试</p>
+<p><strong>项目技术记录</strong>：</p>
+<ol>
+<li><p>项目目录还是老样子，可复用组件抽出，普通组件分文件夹放好，项目结构就清晰多了，虽然都会这么想，但是做可能会忘了，这也是一种经验。</p>
+</li>
+<li><p>vue-router的懒加载，查询了相关资料后使用了这种方法有效：</p>
+<pre><code>"<span class="tag">pashName</span>": <span class="rules">{         <span class="rule"><span class="attribute">component</span>:<span class="value"> <span class="function">function</span>(resolve) {             require.<span class="function">ensure</span>([<span class="string">'componentPath'</span>], <span class="function">function</span>(){
+            <span class="function">resolve</span>(<span class="function">require</span>(<span class="string">'componentPath'</span>))</span></span>;             }</span>);         },
+},
+</code></pre></li>
+<li><p>关于有些页面可能内容无法铺满整个屏幕，而当内容多的时候又能铺满屏幕，这时候可能会困扰背景问题，当内容足够的时候背景就有，而当内容不够的时候呢？<br>解决：可以设置所需元素的最小高度，让它适应你所需要的高度，这样当内容不够的时候可以正常显示，内容足够的时候也会撑开。</p>
+</li>
+<li><p>只修改页面参数（params）的路由跳转会有什么事发生呢？比如在某个信息页，它有它的id，而这个信息页可以查看其他相关信息，当点击其他的信息，想跳转并查看其他信息。<br>答：很遗憾，并没有什么变化，当用router.go()或v-link改变了传入了的params时它只是改变了url，因为目前组件就是渲染的，并没有重新渲染一遍组件。<br>解决：这时候就需要自己加入refresh事件，可能有很多朋友会想到用window.location.reloas()重新加载，当然这样也可以，但是这样会刷新页面，体验就没那么好了。我们可以将传入的params重新请求所需的信息然后更改data更新信息，这样可以不用刷新便可以将信息更新，当然这还需要加上$(window).scrollTop(0)让页面重新回到顶部。</p>
+</li>
+<li><p>嗯这是个大坑，把项目拖的非常的慢，打开也是极其的慢，那就是图片的问题，由于这个官网有较多的图片，当时全用的本地链接，导致项目打包出来的文件极其大，当访问的时候就请求js文件要10m左右，这在高网速的时候也要好几秒，甚至好几分钟的相应时间，这是极其不友好的，也非常影响调试效率。后来将文件通过放在‘牛牛’上用外链形式访问，网页加载速度就可以秒开了，这个问题当时也找了好久，最后解决的时候别提有多舒服了～～～谨记！！！</p>
+</li>
+</ol>
+<ol>
+<li><p>frozen的slider在页面上由于是要将背景设好的，在其他地方可能也可以，但是在vue上想要设置动态的背景图会报错，原因暂时还没有找出来（尴尬），解决当然就只能在js添加相应的li了：</p>
+<pre><code>for<span class="list">(<span class="keyword">var</span> i = <span class="number">0</span><span class="comment">; i &lt; res.banner.length; i++) {</span>
+  $<span class="list">(<span class="quoted">'#slider1</span> ul')</span>.append<span class="list">(<span class="string">"&lt;li&gt;&lt;span&gt;&lt;/span&gt;&lt;/li&gt;"</span>)</span><span class="comment">;</span>
+  var backgroundImage = res.banner[i].image_url<span class="comment">;</span>
+  $<span class="list">(<span class="quoted">'#slider1</span> ul li')</span>.eq<span class="list">(<span class="keyword">i</span>)</span>.children<span class="list">()</span>.css<span class="list">(<span class="quoted">'backgroundImage</span>',<span class="quoted">'url</span><span class="list">(<span class="quoted">'+backgroundImage+</span>')</span>')</span><span class="comment">;</span>
+}</span>
+</code></pre></li>
+<li><p>接下来是重头戏啦，我们常用的page组件，虽然当时找了很多，但是由于各种原因，找不到比较合适的，后来有了一个page，此处只写引用方法了：</p>
+<pre><code>页面中的引用方式，传入改变页面的函数，总页数，记录页数到session，当返回的时候记录当前页面。
+&lt;page <span class="symbol">:total=<span class="string">"total"</span></span> <span class="symbol">:change-page=<span class="string">"changePage"</span></span> <span class="symbol">:applistpage=<span class="string">"applistpage"</span>&gt;&lt;/page&gt;</span>
+
+<span class="symbol">applistpage:</span> sessionStorage.applistpage,
+</code></pre></li>
+</ol>
+<pre><code>changePage(page) {
+    var that = this;
+    $.ajax({
+      type: 'get',
+      url: that.Host+'/Application/appList/group_id/'+that.$route.params.group_id+'/limit/6/start/'+(page-1)*6,
+      // async: false,
+      dataType: 'json',
+      success: function(res) {
+        console.log(res);
+        that.lists = res.list;
+      },
+      error: function(err) {
+        console.log(err);
+      }
+    })
+    sessionStorage.applistpage = page;
+},
+
+            //page.vue
+<span class="tag">&lt;<span class="title">template</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">class</span>=<span class="value">"pagination"</span> <span class="attribute">v-show</span>=<span class="value">"showPagination"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> @<span class="attribute">click</span>=<span class="value">"change(1)"</span> <span class="attribute">v-if</span>=<span class="value">"showPre"</span>&gt;</span> <span class="comment">&lt;!-- &amp;lt;&amp;lt; --&gt;</span> 首页<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span>  <span class="attribute">v-if</span>=<span class="value">"showPre"</span> @<span class="attribute">click</span>=<span class="value">"prev"</span>&gt;</span><span class="comment">&lt;!-- &amp;lt; --&gt;</span>上一页<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">v-for</span>=<span class="value">"i in showCount"</span>   @<span class="attribute">click</span>=<span class="value">"change(i)"</span>
+      <span class="attribute">v-bind:class</span>=<span class="value">"[currentPage ===   i ? 'active' : '']"</span>
+      &gt;</span><span class="tag">&lt;<span class="title">a</span>&gt;</span><span class="comment"></span><span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-if</span>=<span class="value">"showTail"</span>&gt;</span>...<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">v-bind:class</span>=<span class="value">"[currentPage === this.lastPage ? 'active' : '']"</span>&gt;</span>
+      <span class="tag">&lt;<span class="title">a</span> @<span class="attribute">click</span>=<span class="value">"change(this.lastPage)"</span>&gt;</span><span class="comment"></span><span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-if</span>=<span class="value">"showNext"</span> @<span class="attribute">click</span>=<span class="value">"next"</span>&gt;</span><span class="comment">&lt;!-- &amp;gt; --&gt;</span>下一页<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-if</span>=<span class="value">"showNext"</span> @<span class="attribute">click</span>=<span class="value">"change(lastPage)"</span>&gt;</span><span class="comment">&lt;!-- &amp;gt;&amp;gt; --&gt;</span>最后一页<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">template</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+  <span class="built_in">module</span>.exports =  {
+    components: {
+
+    },
+    props: {
+      total: {
+        type: <span class="built_in">Number</span>,
+        <span class="built_in">require</span>: <span class="literal">true</span>
+      },
+      totalCount:{
+        type: <span class="built_in">Number</span>,
+        <span class="keyword">default</span>:<span class="number">0</span>
+      },
+      pageSize: {
+        type: <span class="built_in">Number</span>,
+        <span class="keyword">default</span>: <span class="number">6</span>
+      },
+      showCount: {
+        type: <span class="built_in">Array</span>,
+        <span class="keyword">default</span>() {
+          <span class="keyword">return</span> [];
+        }
+      },
+      changePage: {
+        type: <span class="built_in">Function</span>,
+        <span class="keyword">default</span> () {
+          <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>{};
+        }
+      },
+      apppage: {
+
+      },
+      applistpage: {
+
+      },
+      machinepage: {
+
+      },
+    },
+    ready: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+      <span class="keyword">this</span>.currentPage = <span class="number">1</span>;
+      <span class="keyword">this</span>.lastPage = <span class="built_in">Math</span>.ceil(<span class="keyword">this</span>.total / <span class="keyword">this</span>.pageSize);
+      <span class="keyword">var</span> that = <span class="keyword">this</span>;
+      <span class="keyword">if</span>(that.apppage) {
+        <span class="comment">// setTimeout(function(){</span>
+          that.change(that.apppage);
+        <span class="comment">// },100)</span>
+      }
+      <span class="keyword">if</span>(that.applistpage) {
+        <span class="comment">// setTimeout(function(){</span>
+          that.change(that.applistpage);
+        <span class="comment">// },100)</span>
+      }
+      <span class="keyword">if</span>(that.machinepage) {
+        <span class="comment">// setTimeout(function(){</span>
+          that.change(that.machinepage);
+        <span class="comment">// },100)</span>
+      }
+
+    },
+    data:  <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+      <span class="keyword">return</span> {
+        <span class="comment">//当前页数</span>
+        currentPage: <span class="number">1</span>,
+        <span class="comment">// 最后一页</span>
+        lastPage: <span class="number">1</span>,
+        showNext:<span class="literal">true</span>,
+        showPre:<span class="literal">false</span>,
+        showTail:<span class="literal">false</span>,
+        showPagination:<span class="literal">true</span>,
+      }
+    },
+    computed: {
+      showPagination:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+        <span class="keyword">return</span> <span class="keyword">this</span>.lastPage == <span class="number">0</span>?<span class="literal">false</span>:<span class="literal">true</span>;
+      },
+      showPre:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+        <span class="keyword">if</span>(<span class="keyword">this</span>.currentPage == <span class="number">1</span>){
+          <span class="keyword">return</span> <span class="literal">false</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">return</span> <span class="literal">true</span>;
+        }
+      },
+      showNext:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+        <span class="keyword">if</span>(<span class="keyword">this</span>.lastPage == <span class="number">1</span>){
+          <span class="keyword">return</span> <span class="literal">false</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">if</span>(<span class="keyword">this</span>.lastPage == <span class="keyword">this</span>.currentPage){
+            <span class="keyword">return</span> <span class="literal">false</span>;
+          }
+          <span class="keyword">return</span> <span class="literal">true</span>;
+        }
+      },
+      showCount: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+                <span class="keyword">var</span> $<span class="keyword">this</span> = <span class="keyword">this</span>;
+                <span class="keyword">var</span> ar = [];
+                $<span class="keyword">this</span>.currentPage = <span class="built_in">parseInt</span>($<span class="keyword">this</span>.currentPage);
+                <span class="keyword">if</span> ($<span class="keyword">this</span>.currentPage &gt; <span class="number">3</span>)
+                {
+                    ar.push($<span class="keyword">this</span>.currentPage - <span class="number">3</span>);
+                    ar.push($<span class="keyword">this</span>.currentPage - <span class="number">2</span>);
+                    ar.push($<span class="keyword">this</span>.currentPage - <span class="number">1</span>);
+                }<span class="keyword">else</span>
+                {
+                    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; $<span class="keyword">this</span>.currentPage; i++)
+                    {
+                        ar.push(i);
+                    }
+                }
+                <span class="keyword">if</span> ($<span class="keyword">this</span>.currentPage !== $<span class="keyword">this</span>.lastPage)
+                {
+                    ar.push($<span class="keyword">this</span>.currentPage);
+                }
+                <span class="keyword">if</span> ( $<span class="keyword">this</span>.currentPage &lt; ( $<span class="keyword">this</span>.lastPage - <span class="number">3</span> ) )
+                {
+                    ar.push($<span class="keyword">this</span>.currentPage + <span class="number">1</span>);
+                    ar.push($<span class="keyword">this</span>.currentPage + <span class="number">2</span>);
+                    ar.push($<span class="keyword">this</span>.currentPage + <span class="number">3</span>);
+                    <span class="keyword">if</span> ( $<span class="keyword">this</span>.currentPage &lt; ( $<span class="keyword">this</span>.lastPage - <span class="number">4</span> ) )
+                    {
+                        $<span class="keyword">this</span>.$set(<span class="string">"showTail"</span>, <span class="literal">true</span>);
+                    }
+                }<span class="keyword">else</span>
+                {
+                    $<span class="keyword">this</span>.$set(<span class="string">"showTail"</span>, <span class="literal">false</span>);
+                    <span class="keyword">for</span> (<span class="keyword">var</span> i = ($<span class="keyword">this</span>.currentPage + <span class="number">1</span>); i &lt; $<span class="keyword">this</span>.lastPage; i++)
+                    {
+                        ar.push(i);
+                    }
+                }
+                <span class="keyword">return</span> ar;
+            },
+    },
+    watch: {
+      total (val, oldval) {
+        <span class="keyword">this</span>.lastPage = <span class="built_in">Math</span>.ceil(<span class="keyword">this</span>.total / <span class="keyword">this</span>.pageSize);
+        <span class="comment">// this.currentPage = 1;</span>
+      },
+      totalCount(v){
+        <span class="keyword">if</span>(v == <span class="number">0</span>){
+          <span class="keyword">this</span>.currentPage = <span class="number">1</span>;
+        }
+      }
+    },
+    methods: {
+      prev () {
+        <span class="keyword">if</span>(<span class="keyword">this</span>.currentPage == <span class="number">1</span>){
+          <span class="keyword">this</span>.showPre = <span class="literal">false</span>;
+          <span class="keyword">return</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">this</span>.showPre = <span class="literal">true</span>;
+        }
+        <span class="keyword">this</span>.currentPage = --<span class="keyword">this</span>.currentPage;
+        <span class="keyword">this</span>.change(<span class="keyword">this</span>.currentPage);
+
+      },
+      next () {
+        <span class="keyword">if</span>(<span class="keyword">this</span>.currentPage == <span class="keyword">this</span>.lastPage){
+          <span class="keyword">this</span>.showNext = <span class="literal">false</span>;
+          <span class="keyword">return</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">this</span>.showNext = <span class="literal">true</span>;
+        }
+        <span class="keyword">this</span>.currentPage = ++<span class="keyword">this</span>.currentPage;
+        <span class="keyword">this</span>.change(<span class="keyword">this</span>.currentPage);
+
+      },
+      change (page) {
+        <span class="keyword">if</span> (page === <span class="number">1</span>) {
+          <span class="keyword">this</span>.showPre = <span class="literal">false</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">this</span>.showPre = <span class="literal">true</span>;
+        }
+        <span class="keyword">if</span> (page === <span class="keyword">this</span>.lastPage) {
+          <span class="keyword">this</span>.showNext = <span class="literal">false</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">this</span>.showNext = <span class="literal">true</span>;
+        }
+        <span class="keyword">if</span>(page&lt; <span class="keyword">this</span>.lastPage-<span class="number">4</span>){
+          <span class="keyword">this</span>.showTail = <span class="literal">true</span>;
+        }<span class="keyword">else</span>{
+          <span class="keyword">this</span>.showTail = <span class="literal">false</span>;
+        }
+        <span class="keyword">this</span>.currentPage = page;
+        <span class="keyword">this</span>.changePage(page);
+      }
+    }
+  }
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</code></pre><ol>
+<li>活动页主要处理的就是表情的问题了，emoji表情啊，想必大家在发微信墙的时候都想要用表情表达下自己当时的心情吧，但是文字完全不能展现啊～<br>好的我们上emoji的了：<a href="https://github.com/OneSignal/emoji-picker.git" target="_blank" rel="external">https://github.com/OneSignal/emoji-picker.git</a><br>当然github中有很多这些可以引用看看，但是试了那么多还是这个比较符合要求，看着代码我还改了那么一丢丢，它原先是禁用了iphone的，我重新把它开上了，但是这个主要是用插件自带的emoji表情，而不是我们的输入法带的，这就非常的不舒服了。经过test，它在iPhone上使用输入法的emoji表情还是支持的，但是在安卓上就不行了，真是，伟大的程序员又要出来解决这些麻烦事了，嘿嘿嘿，虽然到现在还没解决，稍微有点眉目吧，等我再细研究研究这些编码问题先～～<br>当然了，如果浏览器或者输入法能像iphone那样支持的话多好啊，方便开发者，方便用户，当然，问题还是要解决的！</li>
+</ol>
+<p>好了，这次的博文就到这里了，这里还发现我写的代码注释可能还不是特别的够，虽然语义上够了，但是适当注释还是不要偷懒加上～～又尴尬了～另外md编辑博文其实还是不太方便，要想加多点元素确实还是比较麻烦的，看我这么简洁的写就知道了，可能在稍微有点久的将来我就自己开发一个博文好了，方便自己使用，到时有了再给大家分享把。。！行吧该睡觉了，给各位看博文的说晚安了。。！</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -1241,77 +1559,6 @@ null：转成<span class="number">0</span>。
 <p>如果一次性定义或修改多个属性，可以使用Object.defineProperties方法：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = Object.defineProperties(&#123;&#125;, &#123;</span><br><span class="line">        p1: &#123; value: <span class="number">123</span>, enumerable: <span class="literal">true</span> &#125;,</span><br><span class="line">        p2: &#123; value: <span class="string">"abc"</span>, enumerable: <span class="literal">true</span> &#125;,</span><br><span class="line">        p3: &#123; <span class="keyword">get</span>: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.p1+<span class="keyword">this</span>.p2 &#125;,</span><br><span class="line">              enumerable:<span class="literal">true</span>,</span><br><span class="line">              configurable:<span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;);</span><br><span class="line">o.p1 <span class="comment">// 123</span></span><br><span class="line">o.p2 <span class="comment">// "abc"</span></span><br><span class="line">o.p3 <span class="comment">// "123abc"</span></span><br></pre></td></tr></table></figure></p>
 <p>上面代码中的p3属性，定义了取值函数get。这时需要注意的是，一旦定义了取值函数get（或存值函数set），就不能将writable设为true，或者同时定义value属性，否则会报错。</p>
 <p>###Object.getOwnPropertyNames方法<br>Object.getOwnPropertyNames方法返回直接定义在某个对象上面的全部属性的名称，而不管该属性是否可枚举。<br>需要注意的是，当使用var命令声明变量时，变量的configurable为false。<br>而不使用var命令声明变量时（或者使用属性赋值的方式声明变量），变量的可配置性为true。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-一周培训心得" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/07/30/一周培训心得/" class="article-date">
-  	<time datetime="2015-07-30T11:41:31.000Z" itemprop="datePublished">2015-07-30</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/07/30/一周培训心得/">一周培训心得</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##Git<br>使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：<br>git reset 回退版本<br>git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100<br>git log 查看，git log – pretty=oneline简洁查看<br>git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别<br>git checkout – file 可以丢弃工作区的修改（file为所丢弃修改文档名）<br>用rm命令删除工作区的file。   如rm test.txt<br>用命令git rm删掉版本库里的file。 如git rm test.txt<br>使用命令git remote add origin git@server-name:path/repo-name.git可以关联一个远程库<br>关联后，使用命令git push -u origin master第一次推送master分支的所有内容；<br>此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改;<br>git clone git@github.com:michaelliao/gitskills.git可以克隆一个本地库<br>git checkout -b dev创建dev分支，加上-b参数表示创建并切换，相当于<br>git branch dev<br>git checkout dev<br>git merge命令用于合并指定分支到当前分支<br>git branch -d dev删除dev分支<br>git log –graph命令可以看到分支合并图<br>git log –graph –pretty=oneline –abbrev-commit查看分支合并情况<br>当写程序过程中需要离开当前写的程序，git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作<br>git stash list命令查看工作现场<br>需要恢复有两个办法：<br>1.用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；<br>2.用git stash pop，恢复的同时把stash内容也删了<br>可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：git stash apply stash@{0}<br>用git remote查看远程仓库的信息<br>用git remote -v可以显示更详细的信息<br>推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：git push origin master。如果要推送其他分支，比如dev，就改成:git push origin dev<br>创建远程origin的dev分支到本地，于是用这个命令创建本地dev分支:git checkout -b dev origin/dev<br>如果推送失败，可能是因为小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送<br>如果git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：$ git branch –set-upstream dev origin/dev</p>
-<hr>
-<p>##HTML &amp; CSS</p>
-<p>###1.样式分离<br>Html代码与Css代码分离，通过样式分离可以方便我们修改，当我们修改了HTML文件后，我们可以不用重新修改CSS文件来适应新的HTML文件。</p>
-<p>###2.CSS优先级<br>优先级逐级增加的选择器列表:<br>    通用选择器<br>    元素(类型)选择器<br>    类选择器<br>    属性选择器<br>    伪类<br>    ID 选择器<br>    内联样式</p>
-<p>###3.CSS 代码书写规范<br>书写顺序：<br>1.位置属性(position, top, right, z-index, display, float等)<br>2.大小(width, height, padding, margin)<br>3.文字系列(font, line-height, letter-spacing, color- text-align等)<br>4.背景(background, border等)<br>5.其他(animation, transition等)</p>
-<p>使用CSS缩写，减少代码量：<br>1.CSS有些属性是可以缩写的，比如padding,margin,font等等，这样精简代码同时又能提高用户的阅读体验。<br>2.去掉小数点前的0 如font-size:0.8em改成font-size:.8em</p>
-<p>简写命名：navigation –&gt; nav</p>
-<p>16进制颜色代码缩写:#eebbcc –&gt; #ebc</p>
-<p>连字符CSS选择器命名规范:<br>1.长名称或词组可以使用中横线来为选择器命名。<br>2.不能用“_”下划线来命名CSS选择器，为什么呢？<br>    一些浏览器已经不允许使用下划线来命名CSS选择器（就是不兼容）；<br>    能良好区分JavaScript变量命名.</p>
-<p>不要随意使用id:<br>id在JS是唯一的，不能多次使用，而使用class类选择器却可以重复使用，另外id的优先级优先与class，所以id应该按需使用，而不能滥用。    </p>
-<p>为选择器添加状态前缀:<br>如.withdrawal –&gt; .iswithdrawal</p>
-<p>常用CSS命名规则：<br>头：header<br>内容：content/container<br>尾：footer<br>导航：nav<br>侧栏：sidebar<br>栏目：column<br>页面外围控制整体佈局宽度：wrapper<br>左右中：left right center<br>登录条：loginbar<br>标志：logo<br>广告：banner<br>页面主体：main<br>热点：hot<br>新闻：news<br>下载：download<br>子导航：subnav<br>菜单：menu<br>子菜单：submenu<br>搜索：search<br>友情链接：friendlink<br>页脚：footer<br>版权：copyright<br>滚动：scroll<br>内容：content<br>标签：tags<br>文章列表：list<br>提示信息：msg<br>小技巧：tips<br>栏目标题：title<br>加入：joinus<br>指南：guild<br>服务：service<br>注册：regsiter<br>状态：status<br>投票：vote<br>合作伙伴：partner</p>
-<p>##JAVASCRIPT<br>Javascript是一门单线程的语言。若是按照代码顺序执行，假如有的代码执行消耗的时间长，那么后面的代码得等待它们执行完才能执行，这就造成了效率低下。<br>Javascript的执行机制为了解决它的单线程问题，类似于创建了其他的线程执行代码，当检测到需要耗费时间去执行的代码时，会将这部分代码拉出来单独执行，而主线程继续执行后面的代码，等到主线程执行完后再将拉出去的代码，按照队列一个一个回到主线程执行，这样可以增大运行的效率。</p>
-<p>##HTML5 &amp; CSS3</p>
-<p>###HTML5<br>HTML5可以实现网页中所需的音频、视频和拖放。<br>可查看 <a href="http://www.w3school.com.cn/html5/" target="_blank" rel="external">http://www.w3school.com.cn/html5/</a> 学习</p>
-<p>###CSS3<br>CSS3引入了Transition，使的原先瞬间变化的东西变得有一个过渡的过程，也就是有了动画的效果，让人看起来更舒服。<br>CSS3可以编写较多的动画效果，自己编写动画执行时间，是美化网页的好工具。<br>可查看 <a href="http://www.w3school.com.cn/css3/index.asp" target="_blank" rel="external">http://www.w3school.com.cn/css3/index.asp</a> 学习</p>
 
       
     </div>
