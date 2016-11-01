@@ -11,13 +11,13 @@
 项目描述：用轻量级js=&amp;gt;vuejs，通过gulp-webpack打包，部分内容切分出来另外用基本的html，css和js完成，为了使打包后的文件能较小，更加提高打开的性能，虽然路由使用了懒加载（做这个项目时vue-router的文档的懒加载会报错，具体">
 <meta property="og:type" content="article">
 <meta property="og:title" content="project总结">
-<meta property="og:url" content="http://yoursite.com/2016/11/01/project总结/index.html">
+<meta property="og:url" content="http://yoursite.com/2016/11/01/project总结 (1)/index.html">
 <meta property="og:site_name" content="Jacy">
 <meta property="og:description" content="好久没有写博文了，这确实不是个好习惯，毕竟心得体会不会一直牢记心中。
 好了，如题，介绍下我的小项目了～
 项目名称：A公司微信公众号上的官方
 项目描述：用轻量级js=&amp;gt;vuejs，通过gulp-webpack打包，部分内容切分出来另外用基本的html，css和js完成，为了使打包后的文件能较小，更加提高打开的性能，虽然路由使用了懒加载（做这个项目时vue-router的文档的懒加载会报错，具体">
-<meta property="og:updated_time" content="2016-11-01T15:50:08.962Z">
+<meta property="og:updated_time" content="2016-11-01T15:59:27.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="project总结">
 <meta name="twitter:description" content="好久没有写博文了，这确实不是个好习惯，毕竟心得体会不会一直牢记心中。
@@ -200,11 +200,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-project总结" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-project总结 (1)" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/11/01/project总结/" class="article-date">
-  	<time datetime="2016-11-01T15:50:08.966Z" itemprop="datePublished">2016-11-01</time>
+      <a href="/2016/11/01/project总结 (1)/" class="article-date">
+  	<time datetime="2016-11-01T15:59:44.825Z" itemprop="datePublished">2016-11-01</time>
 </a>
     </div>
   
@@ -247,8 +247,10 @@
 <li><p>项目目录还是老样子，可复用组件抽出，普通组件分文件夹放好，项目结构就清晰多了，虽然都会这么想，但是做可能会忘了，这也是一种经验。</p>
 </li>
 <li><p>vue-router的懒加载，查询了相关资料后使用了这种方法有效：</p>
-<pre><code>"<span class="tag">pashName</span>": <span class="rules">{         <span class="rule"><span class="attribute">component</span>:<span class="value"> <span class="function">function</span>(resolve) {             require.<span class="function">ensure</span>([<span class="string">'componentPath'</span>], <span class="function">function</span>(){
-            <span class="function">resolve</span>(<span class="function">require</span>(<span class="string">'componentPath'</span>))</span></span>;             }</span>);         },
+<pre><code>"<span class="tag">pashName</span>": <span class="rules">{         
+    <span class="rule"><span class="attribute">component</span>:<span class="value"> <span class="function">function</span>(resolve) {
+        require.<span class="function">ensure</span>([<span class="string">'componentPath'</span>], <span class="function">function</span>(){
+            <span class="function">resolve</span>(<span class="function">require</span>(<span class="string">'componentPath'</span>))</span></span>;             }</span>);           },
 },
 </code></pre></li>
 <li><p>关于有些页面可能内容无法铺满整个屏幕，而当内容多的时候又能铺满屏幕，这时候可能会困扰背景问题，当内容足够的时候背景就有，而当内容不够的时候呢？<br>解决：可以设置所需元素的最小高度，让它适应你所需要的高度，这样当内容不够的时候可以正常显示，内容足够的时候也会撑开。</p>
@@ -268,12 +270,11 @@
 </code></pre></li>
 <li><p>接下来是重头戏啦，我们常用的page组件，虽然当时找了很多，但是由于各种原因，找不到比较合适的，后来有了一个page，此处只写引用方法了：</p>
 <pre><code>页面中的引用方式，传入改变页面的函数，总页数，记录页数到session，当返回的时候记录当前页面。
-&lt;page <span class="symbol">:total=<span class="string">"total"</span></span> <span class="symbol">:change-page=<span class="string">"changePage"</span></span> <span class="symbol">:applistpage=<span class="string">"applistpage"</span>&gt;&lt;/page&gt;</span>
+<span class="tag">&lt;<span class="title">page</span> <span class="attribute">:total</span>=<span class="value">"total"</span> <span class="attribute">:change-page</span>=<span class="value">"changePage"</span> <span class="attribute">:applistpage</span>=<span class="value">"applistpage"</span>&gt;</span><span class="tag">&lt;/<span class="title">page</span>&gt;</span>
 
-<span class="symbol">applistpage:</span> sessionStorage.applistpage,
-</code></pre></li>
-</ol>
-<pre><code>changePage(page) {
+applistpage: sessionStorage.applistpage,
+
+changePage(page) {
     var that = this;
     $.ajax({
       type: 'get',
@@ -497,8 +498,9 @@
     }
   }
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre><ol>
-<li>活动页主要处理的就是表情的问题了，emoji表情啊，想必大家在发微信墙的时候都想要用表情表达下自己当时的心情吧，但是文字完全不能展现啊～<br>好的我们上emoji的了：<a href="https://github.com/OneSignal/emoji-picker.git" target="_blank" rel="external">https://github.com/OneSignal/emoji-picker.git</a><br>当然github中有很多这些可以引用看看，但是试了那么多还是这个比较符合要求，看着代码我还改了那么一丢丢，它原先是禁用了iphone的，我重新把它开上了，但是这个主要是用插件自带的emoji表情，而不是我们的输入法带的，这就非常的不舒服了。经过test，它在iPhone上使用输入法的emoji表情还是支持的，但是在安卓上就不行了，真是，伟大的程序员又要出来解决这些麻烦事了，嘿嘿嘿，虽然到现在还没解决，稍微有点眉目吧，等我再细研究研究这些编码问题先～～<br>当然了，如果浏览器或者输入法能像iphone那样支持的话多好啊，方便开发者，方便用户，当然，问题还是要解决的！</li>
+</code></pre></li>
+<li><p>活动页主要处理的就是表情的问题了，emoji表情啊，想必大家在发微信墙的时候都想要用表情表达下自己当时的心情吧，但是文字完全不能展现啊～<br>好的我们上emoji的了：<a href="https://github.com/OneSignal/emoji-picker.git" target="_blank" rel="external">https://github.com/OneSignal/emoji-picker.git</a><br>当然github中有很多这些可以引用看看，但是试了那么多还是这个比较符合要求，看着代码我还改了那么一丢丢，它原先是禁用了iphone的，我重新把它开上了，但是这个主要是用插件自带的emoji表情，而不是我们的输入法带的，这就非常的不舒服了。经过test，它在iPhone上使用输入法的emoji表情还是支持的，但是在安卓上就不行了，真是，伟大的程序员又要出来解决这些麻烦事了，嘿嘿嘿，虽然到现在还没解决，稍微有点眉目吧，等我再细研究研究这些编码问题先～～<br>当然了，如果浏览器或者输入法能像iphone那样支持的话多好啊，方便开发者，方便用户，当然，问题还是要解决的！</p>
+</li>
 </ol>
 <p>好了，这次的博文就到这里了，这里还发现我写的代码注释可能还不是特别的够，虽然语义上够了，但是适当注释还是不要偷懒加上～～又尴尬了～另外md编辑博文其实还是不太方便，要想加多点元素确实还是比较麻烦的，看我这么简洁的写就知道了，可能在稍微有点久的将来我就自己开发一个博文好了，方便自己使用，到时有了再给大家分享把。。！行吧该睡觉了，给各位看博文的说晚安了。。！</p>
 
@@ -510,18 +512,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/11/01/project总结 (1)/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          project总结
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/19/我们家CSCWFE+总结/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">我们家CSCWFE+总结</div>
+    <a href="/2016/11/01/project总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">project总结</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -550,7 +543,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="project总结" data-title="project总结" data-url="http://yoursite.com/2016/11/01/project总结/"></div>
+	<div class="ds-thread" data-thread-key="project总结 (1)" data-title="project总结" data-url="http://yoursite.com/2016/11/01/project总结 (1)/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
