@@ -218,7 +218,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="new操作符">new操作符</h3><pre><code><span class="variable"><span class="keyword">var</span> person</span> = new Person();
+        <h2 id="new操作符">new操作符</h2><pre><code><span class="variable"><span class="keyword">var</span> person</span> = new Person();
 function New(<span class="function"><span class="keyword">fun</span>) {</span>
     <span class="variable"><span class="keyword">var</span> obj</span> = {'_proto_' : <span class="function"><span class="keyword">fun</span>.prototype}; <span class="comment">//实例原型指向</span></span>
     <span class="keyword">return</span> function() {
@@ -445,9 +445,9 @@ a(<span class="keyword">person</span>);
 alert(<span class="keyword">person</span>.name) //<span class="string">"abc"</span>
 //按值传递，但按引用来引用同一对象
 </code></pre><p><strong>每个执行环境都有一个与之关联的变量对象（环境中变量+函数）<br>变量对象形成作用域链，作用域链前端是当前环境变量对象<br>若环境是函数，则把其活动对象作为变量对象，函数活动对象最初只含有arguments对象</strong></p>
-<p>###数组方法<br>pop() //数组尾部移除一项，返回移除项<br>push() //数组尾部增加项，返回数组长度<br>shift() //数组头部移除一项，返回移除项<br>unshift() //数组头部增加项，返回数组长度<br>slice() //两参数表示起始和结束索引，返回这段索引表示的数组，不影响原数组<br>splice() //可删除可插入，2参数删除，3参数以上插入</p>
+<h2 id="数组方法">数组方法</h2><p>pop() //数组尾部移除一项，返回移除项<br>push() //数组尾部增加项，返回数组长度<br>shift() //数组头部移除一项，返回移除项<br>unshift() //数组头部增加项，返回数组长度<br>slice() //两参数表示起始和结束索引，返回这段索引表示的数组，不影响原数组<br>splice() //可删除可插入，2参数删除，3参数以上插入</p>
 <p>indexOf(“项”，起点) //查找项在数组中的索引，默认从0向后查<br>lastIndexOf与indexOf相反，默认从后向前查<br>若没找到则返回-1</p>
-<p>###数据，字符处理<br>toFixed() //字符串形式返回指定个数小数<br>toExponential() //字符串形式返回指定个数小数指数表示法<br>toPrecision()  //返回小数格式或指数格式（根据传入数字，参数表示所有数字位数，不包括指数部分）<br>charAt() //返回指定位置字符<br>charCodeAt() //返回指定位置字符字符编码</p>
+<h2 id="数据，字符处理">数据，字符处理</h2><p>toFixed() //字符串形式返回指定个数小数<br>toExponential() //字符串形式返回指定个数小数指数表示法<br>toPrecision()  //返回小数格式或指数格式（根据传入数字，参数表示所有数字位数，不包括指数部分）<br>charAt() //返回指定位置字符<br>charCodeAt() //返回指定位置字符字符编码</p>
 <p>slice(起，末) //参数负时加长度<br>substring(起，末) //参数负时取0<br>substr(起，个数) //负时起始位置加长度，个数取0<br>以上三函数是取出指定位置字符串</p>
 <p>trim() //去前置后缀空格<br>toUpperCase() //大写 toLocaleUpperCase() 针对地区<br>toLowerCase() //小写 toLocaleLowerCase()</p>
 <p>split() //将字符串用指定分隔符分割，存入数组</p>
@@ -455,7 +455,7 @@ alert(<span class="keyword">person</span>.name) //<span class="string">"abc"</sp
 <pre><code>var uri=<span class="string">"http://www.wrox.com/illegal value.htm#start"</span>;
 encodeURI(uri) //<span class="string">"http://www.wrox.com/illegal<span class="variable">%20value</span>.htm#start"</span>
 encodeURIComponent(uri) //<span class="string">"http<span class="variable">%3A</span><span class="variable">%2F</span><span class="variable">%2Fwww</span>.wrox.com<span class="variable">%2Fillegal</span><span class="variable">%20value</span>.htm<span class="variable">%23start</span>"</span>
-</code></pre><p>###属性描述符<br>数据属性：<br>[[Enumerable]],<br>[[Writable]],<br>[[Value]],<br>[[Configurable]] //改为false就不能改true<br>Object.defineProperty()<br>Object.defineProperties() //定义多个属性</p>
+</code></pre><h2 id="属性描述符">属性描述符</h2><p>数据属性：<br>[[Enumerable]],<br>[[Writable]],<br>[[Value]],<br>[[Configurable]] //改为false就不能改true<br>Object.defineProperty()<br>Object.defineProperties() //定义多个属性</p>
 <pre><code>var <span class="keyword">person</span> = {};
 Object.defineProperty(<span class="keyword">person</span>,<span class="string">"name"</span>,{
     writable : false,
@@ -1503,11 +1503,11 @@ console.<span class="built_in">log</span><span class="params">(a)</span>; <span 
     <div class="article-entry" itemprop="articleBody">
       
         <p>培训结束了，我们苦逼的游玩生涯也就开始了~~</p>
-<p>##首站：深圳<br>探望“老人家”时间到啦，是去看鸡汤经理还是去看熊桑呢，深圳跟北京。。。想想，去北京太过遥远了，我们要放弃熊桑了(┬＿┬)，所以我们来到了深圳，鸡汤经理之家。</p>
+<h2 id="首站：深圳">首站：深圳</h2><p>探望“老人家”时间到啦，是去看鸡汤经理还是去看熊桑呢，深圳跟北京。。。想想，去北京太过遥远了，我们要放弃熊桑了(┬＿┬)，所以我们来到了深圳，鸡汤经理之家。</p>
 <p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182149.jpg?imageView2/2/w/203/h/203&amp;e=1439308192&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:cm8id3eI1ge3udFVu4VZoClkkmQ" alt="">  <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150811113110.jpg?imageView2/2/w/203/h/203&amp;e=1439350353&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:nH69gLWG5KemdMicR6OjHFZITXs" alt=""><br>坐了N久的大巴车+地铁+吃了一木桶辣椒饭，我们终于到了鸡汤经理之家了(┬＿┬)，别惹我，让我趴一会。。。</p>
 <p>砰砰砰几声，似乎是暴君叫我们起床了，神一样的bra跟一群女生出去逛街了，一逛就是9个小时，实在是太可怕了。码农就是码农，出去玩也少不了打码环节，捞文桑又给我们上了一下课。晚上8个男生挤在max的房间里睡觉，max默默的去客厅睡了，还是max机智，8个人的房间，只有一个人有被子盖，其他的都冷的难睡。。。</p>
 <p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182137.jpg?imageView2/2/w/203/h/203&amp;e=1439308185&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:9p4LSI5qGP-tpN4lTt3ks6kbCbM" alt=""></p>
-<p>##次站：西涌<br>摸摸索索花了好几个小时才到了大鹏站，然后打仗似的上了m232进入西涌海滩，进了民宿后还是一样，别惹我，让我趴一会。。。</p>
+<h2 id="次站：西涌">次站：西涌</h2><p>摸摸索索花了好几个小时才到了大鹏站，然后打仗似的上了m232进入西涌海滩，进了民宿后还是一样，别惹我，让我趴一会。。。</p>
 <p>起来后就是激动人心的烧烤了，也是我们唯一获得进食的机会，要好好珍惜，(┬＿┬)。。这一顿，烤肠成了主食，喵烤的眼泪汪汪的，我们负责。。。吃。</p>
 <p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150811000415.jpg?imageView2/2/w/203/h/203&amp;e=1439309120&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:JQW7SqFi5XtJmbQH1BllG-MxtuA" alt=""></p>
 <p>晚上海滩只看到了涨潮的情景，时候不对，不怎么能玩水。天黑了就开始撕名牌哈，其实名字都看不到，凭感觉摸索了，不得不提的是，大果这个队友真给力，凶残的我都怕了。。。俗话说的好，狭路相逢勇者胜，嘿嘿，道理还是很有的。</p>
@@ -1515,7 +1515,7 @@ console.<span class="built_in">log</span><span class="params">(a)</span>; <span 
 <p>看，翔是捞文的，捞文是暴君的，翔也是暴君的，那谁是我的呢？？</p>
 <p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182151.jpg?imageView2/2/w/203/h/203&amp;e=1439309160&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:qgc-QN61IIRBc9T_Ww-YhMgysBc" alt=""> <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182157.jpg?imageView2/2/w/203/h/203&amp;e=1439309166&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:ouI3Gy7guf_oZxDg3TTa0mXldQY" alt=""></p>
 <p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182209.jpg?imageView2/2/w/203/h/203&amp;e=1439309176&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:7Bpw4qFSzf2NyeuUf84mQ_yNWf0" alt=""></p>
-<p>##终点站：家<br>两夜冷的难睡，一回家还真是很累，出海滩，等公交，又花几个小时时间，大家都各回各家各找各妈了，培训正式结束了，暑假开始了。。。要学的东西还很多，不说了，忙活去。<br><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182117.jpg?imageView2/2/w/203/h/203&amp;e=1439309153&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:hVKDbBM8H44uS6O9krIlU5QWb10" alt="">  <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182154.jpg?imageView2/2/w/203/h/203&amp;e=1439309161&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:HJm2kXhC_qtn1CbduzUaI76emFA" alt=""></p>
+<h2 id="终点站：家">终点站：家</h2><p>两夜冷的难睡，一回家还真是很累，出海滩，等公交，又花几个小时时间，大家都各回各家各找各妈了，培训正式结束了，暑假开始了。。。要学的东西还很多，不说了，忙活去。<br><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182117.jpg?imageView2/2/w/203/h/203&amp;e=1439309153&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:hVKDbBM8H44uS6O9krIlU5QWb10" alt="">  <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182154.jpg?imageView2/2/w/203/h/203&amp;e=1439309161&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:HJm2kXhC_qtn1CbduzUaI76emFA" alt=""></p>
 
       
     </div>

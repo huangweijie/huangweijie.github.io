@@ -19,7 +19,7 @@ null //空对象指针
 typeof操作符检测基本类型（Null,Undefined,Boolean,String,Number）
 instanceof检测引用类型(Object,Array,Date,RegExp,Function)和基本包装类型（类似引用类型，不过是瞬间的，String,Number,Boolean）
 typeof 未定义变量 =">
-<meta property="og:updated_time" content="2017-01-12T14:06:46.118Z">
+<meta property="og:updated_time" content="2017-01-12T14:28:05.101Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="js高程学习心得（一）">
 <meta name="twitter:description" content="“use strict” //使用严格模式
@@ -278,9 +278,9 @@ a(<span class="keyword">person</span>);
 alert(<span class="keyword">person</span>.name) //<span class="string">"abc"</span>
 //按值传递，但按引用来引用同一对象
 </code></pre><p><strong>每个执行环境都有一个与之关联的变量对象（环境中变量+函数）<br>变量对象形成作用域链，作用域链前端是当前环境变量对象<br>若环境是函数，则把其活动对象作为变量对象，函数活动对象最初只含有arguments对象</strong></p>
-<p>###数组方法<br>pop() //数组尾部移除一项，返回移除项<br>push() //数组尾部增加项，返回数组长度<br>shift() //数组头部移除一项，返回移除项<br>unshift() //数组头部增加项，返回数组长度<br>slice() //两参数表示起始和结束索引，返回这段索引表示的数组，不影响原数组<br>splice() //可删除可插入，2参数删除，3参数以上插入</p>
+<h2 id="数组方法">数组方法</h2><p>pop() //数组尾部移除一项，返回移除项<br>push() //数组尾部增加项，返回数组长度<br>shift() //数组头部移除一项，返回移除项<br>unshift() //数组头部增加项，返回数组长度<br>slice() //两参数表示起始和结束索引，返回这段索引表示的数组，不影响原数组<br>splice() //可删除可插入，2参数删除，3参数以上插入</p>
 <p>indexOf(“项”，起点) //查找项在数组中的索引，默认从0向后查<br>lastIndexOf与indexOf相反，默认从后向前查<br>若没找到则返回-1</p>
-<p>###数据，字符处理<br>toFixed() //字符串形式返回指定个数小数<br>toExponential() //字符串形式返回指定个数小数指数表示法<br>toPrecision()  //返回小数格式或指数格式（根据传入数字，参数表示所有数字位数，不包括指数部分）<br>charAt() //返回指定位置字符<br>charCodeAt() //返回指定位置字符字符编码</p>
+<h2 id="数据，字符处理">数据，字符处理</h2><p>toFixed() //字符串形式返回指定个数小数<br>toExponential() //字符串形式返回指定个数小数指数表示法<br>toPrecision()  //返回小数格式或指数格式（根据传入数字，参数表示所有数字位数，不包括指数部分）<br>charAt() //返回指定位置字符<br>charCodeAt() //返回指定位置字符字符编码</p>
 <p>slice(起，末) //参数负时加长度<br>substring(起，末) //参数负时取0<br>substr(起，个数) //负时起始位置加长度，个数取0<br>以上三函数是取出指定位置字符串</p>
 <p>trim() //去前置后缀空格<br>toUpperCase() //大写 toLocaleUpperCase() 针对地区<br>toLowerCase() //小写 toLocaleLowerCase()</p>
 <p>split() //将字符串用指定分隔符分割，存入数组</p>
@@ -288,7 +288,7 @@ alert(<span class="keyword">person</span>.name) //<span class="string">"abc"</sp
 <pre><code>var uri=<span class="string">"http://www.wrox.com/illegal value.htm#start"</span>;
 encodeURI(uri) //<span class="string">"http://www.wrox.com/illegal<span class="variable">%20value</span>.htm#start"</span>
 encodeURIComponent(uri) //<span class="string">"http<span class="variable">%3A</span><span class="variable">%2F</span><span class="variable">%2Fwww</span>.wrox.com<span class="variable">%2Fillegal</span><span class="variable">%20value</span>.htm<span class="variable">%23start</span>"</span>
-</code></pre><p>###属性描述符<br>数据属性：<br>[[Enumerable]],<br>[[Writable]],<br>[[Value]],<br>[[Configurable]] //改为false就不能改true<br>Object.defineProperty()<br>Object.defineProperties() //定义多个属性</p>
+</code></pre><h2 id="属性描述符">属性描述符</h2><p>数据属性：<br>[[Enumerable]],<br>[[Writable]],<br>[[Value]],<br>[[Configurable]] //改为false就不能改true<br>Object.defineProperty()<br>Object.defineProperties() //定义多个属性</p>
 <pre><code>var <span class="keyword">person</span> = {};
 Object.defineProperty(<span class="keyword">person</span>,<span class="string">"name"</span>,{
     writable : false,

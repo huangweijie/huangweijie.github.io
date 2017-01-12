@@ -5,16 +5,16 @@
   
   <title>一周培训心得 | Jacy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="##Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git di">
+  <meta name="description" content="Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git diff">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一周培训心得">
 <meta property="og:url" content="http://yoursite.com/2015/07/30/一周培训心得/index.html">
 <meta property="og:site_name" content="Jacy">
-<meta property="og:description" content="##Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git di">
-<meta property="og:updated_time" content="2016-05-20T09:19:04.977Z">
+<meta property="og:description" content="Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git diff">
+<meta property="og:updated_time" content="2017-01-12T14:29:49.949Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一周培训心得">
-<meta name="twitter:description" content="##Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git di">
+<meta name="twitter:description" content="Git使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：git reset 回退版本git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100git log 查看，git log – pretty=oneline简洁查看git diff">
   
     <link rel="alternative" href="/atom.xml" title="Jacy" type="application/atom+xml">
   
@@ -228,12 +228,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##Git<br>使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：<br>git reset 回退版本<br>git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100<br>git log 查看，git log – pretty=oneline简洁查看<br>git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别<br>git checkout – file 可以丢弃工作区的修改（file为所丢弃修改文档名）<br>用rm命令删除工作区的file。   如rm test.txt<br>用命令git rm删掉版本库里的file。 如git rm test.txt<br>使用命令git remote add origin git@server-name:path/repo-name.git可以关联一个远程库<br>关联后，使用命令git push -u origin master第一次推送master分支的所有内容；<br>此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改;<br>git clone git@github.com:michaelliao/gitskills.git可以克隆一个本地库<br>git checkout -b dev创建dev分支，加上-b参数表示创建并切换，相当于<br>git branch dev<br>git checkout dev<br>git merge命令用于合并指定分支到当前分支<br>git branch -d dev删除dev分支<br>git log –graph命令可以看到分支合并图<br>git log –graph –pretty=oneline –abbrev-commit查看分支合并情况<br>当写程序过程中需要离开当前写的程序，git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作<br>git stash list命令查看工作现场<br>需要恢复有两个办法：<br>1.用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；<br>2.用git stash pop，恢复的同时把stash内容也删了<br>可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：git stash apply stash@{0}<br>用git remote查看远程仓库的信息<br>用git remote -v可以显示更详细的信息<br>推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：git push origin master。如果要推送其他分支，比如dev，就改成:git push origin dev<br>创建远程origin的dev分支到本地，于是用这个命令创建本地dev分支:git checkout -b dev origin/dev<br>如果推送失败，可能是因为小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送<br>如果git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：$ git branch –set-upstream dev origin/dev</p>
+        <h2 id="Git">Git</h2><p>使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：<br>git reset 回退版本<br>git reset –hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100<br>git log 查看，git log – pretty=oneline简洁查看<br>git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别<br>git checkout – file 可以丢弃工作区的修改（file为所丢弃修改文档名）<br>用rm命令删除工作区的file。   如rm test.txt<br>用命令git rm删掉版本库里的file。 如git rm test.txt<br>使用命令git remote add origin git@server-name:path/repo-name.git可以关联一个远程库<br>关联后，使用命令git push -u origin master第一次推送master分支的所有内容；<br>此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改;<br>git clone git@github.com:michaelliao/gitskills.git可以克隆一个本地库<br>git checkout -b dev创建dev分支，加上-b参数表示创建并切换，相当于<br>git branch dev<br>git checkout dev<br>git merge命令用于合并指定分支到当前分支<br>git branch -d dev删除dev分支<br>git log –graph命令可以看到分支合并图<br>git log –graph –pretty=oneline –abbrev-commit查看分支合并情况<br>当写程序过程中需要离开当前写的程序，git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作<br>git stash list命令查看工作现场<br>需要恢复有两个办法：<br>1.用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；<br>2.用git stash pop，恢复的同时把stash内容也删了<br>可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：git stash apply stash@{0}<br>用git remote查看远程仓库的信息<br>用git remote -v可以显示更详细的信息<br>推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：git push origin master。如果要推送其他分支，比如dev，就改成:git push origin dev<br>创建远程origin的dev分支到本地，于是用这个命令创建本地dev分支:git checkout -b dev origin/dev<br>如果推送失败，可能是因为小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送<br>如果git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：$ git branch –set-upstream dev origin/dev</p>
 <hr>
-<p>##HTML &amp; CSS</p>
-<p>###1.样式分离<br>Html代码与Css代码分离，通过样式分离可以方便我们修改，当我们修改了HTML文件后，我们可以不用重新修改CSS文件来适应新的HTML文件。</p>
-<p>###2.CSS优先级<br>优先级逐级增加的选择器列表:<br>    通用选择器<br>    元素(类型)选择器<br>    类选择器<br>    属性选择器<br>    伪类<br>    ID 选择器<br>    内联样式</p>
-<p>###3.CSS 代码书写规范<br>书写顺序：<br>1.位置属性(position, top, right, z-index, display, float等)<br>2.大小(width, height, padding, margin)<br>3.文字系列(font, line-height, letter-spacing, color- text-align等)<br>4.背景(background, border等)<br>5.其他(animation, transition等)</p>
+<h2 id="HTML_&amp;_CSS">HTML &amp; CSS</h2><h3 id="1-样式分离">1.样式分离</h3><p>Html代码与Css代码分离，通过样式分离可以方便我们修改，当我们修改了HTML文件后，我们可以不用重新修改CSS文件来适应新的HTML文件。</p>
+<h3 id="2-CSS优先级">2.CSS优先级</h3><p>优先级逐级增加的选择器列表:<br>    通用选择器<br>    元素(类型)选择器<br>    类选择器<br>    属性选择器<br>    伪类<br>    ID 选择器<br>    内联样式</p>
+<h3 id="3-CSS_代码书写规范">3.CSS 代码书写规范</h3><p>书写顺序：<br>1.位置属性(position, top, right, z-index, display, float等)<br>2.大小(width, height, padding, margin)<br>3.文字系列(font, line-height, letter-spacing, color- text-align等)<br>4.背景(background, border等)<br>5.其他(animation, transition等)</p>
 <p>使用CSS缩写，减少代码量：<br>1.CSS有些属性是可以缩写的，比如padding,margin,font等等，这样精简代码同时又能提高用户的阅读体验。<br>2.去掉小数点前的0 如font-size:0.8em改成font-size:.8em</p>
 <p>简写命名：navigation –&gt; nav</p>
 <p>16进制颜色代码缩写:#eebbcc –&gt; #ebc</p>
@@ -241,10 +240,9 @@
 <p>不要随意使用id:<br>id在JS是唯一的，不能多次使用，而使用class类选择器却可以重复使用，另外id的优先级优先与class，所以id应该按需使用，而不能滥用。    </p>
 <p>为选择器添加状态前缀:<br>如.withdrawal –&gt; .iswithdrawal</p>
 <p>常用CSS命名规则：<br>头：header<br>内容：content/container<br>尾：footer<br>导航：nav<br>侧栏：sidebar<br>栏目：column<br>页面外围控制整体佈局宽度：wrapper<br>左右中：left right center<br>登录条：loginbar<br>标志：logo<br>广告：banner<br>页面主体：main<br>热点：hot<br>新闻：news<br>下载：download<br>子导航：subnav<br>菜单：menu<br>子菜单：submenu<br>搜索：search<br>友情链接：friendlink<br>页脚：footer<br>版权：copyright<br>滚动：scroll<br>内容：content<br>标签：tags<br>文章列表：list<br>提示信息：msg<br>小技巧：tips<br>栏目标题：title<br>加入：joinus<br>指南：guild<br>服务：service<br>注册：regsiter<br>状态：status<br>投票：vote<br>合作伙伴：partner</p>
-<p>##JAVASCRIPT<br>Javascript是一门单线程的语言。若是按照代码顺序执行，假如有的代码执行消耗的时间长，那么后面的代码得等待它们执行完才能执行，这就造成了效率低下。<br>Javascript的执行机制为了解决它的单线程问题，类似于创建了其他的线程执行代码，当检测到需要耗费时间去执行的代码时，会将这部分代码拉出来单独执行，而主线程继续执行后面的代码，等到主线程执行完后再将拉出去的代码，按照队列一个一个回到主线程执行，这样可以增大运行的效率。</p>
-<p>##HTML5 &amp; CSS3</p>
-<p>###HTML5<br>HTML5可以实现网页中所需的音频、视频和拖放。<br>可查看 <a href="http://www.w3school.com.cn/html5/" target="_blank" rel="external">http://www.w3school.com.cn/html5/</a> 学习</p>
-<p>###CSS3<br>CSS3引入了Transition，使的原先瞬间变化的东西变得有一个过渡的过程，也就是有了动画的效果，让人看起来更舒服。<br>CSS3可以编写较多的动画效果，自己编写动画执行时间，是美化网页的好工具。<br>可查看 <a href="http://www.w3school.com.cn/css3/index.asp" target="_blank" rel="external">http://www.w3school.com.cn/css3/index.asp</a> 学习</p>
+<h2 id="JAVASCRIPT">JAVASCRIPT</h2><p>Javascript是一门单线程的语言。若是按照代码顺序执行，假如有的代码执行消耗的时间长，那么后面的代码得等待它们执行完才能执行，这就造成了效率低下。<br>Javascript的执行机制为了解决它的单线程问题，类似于创建了其他的线程执行代码，当检测到需要耗费时间去执行的代码时，会将这部分代码拉出来单独执行，而主线程继续执行后面的代码，等到主线程执行完后再将拉出去的代码，按照队列一个一个回到主线程执行，这样可以增大运行的效率。</p>
+<h2 id="HTML5_&amp;_CSS3">HTML5 &amp; CSS3</h2><h3 id="HTML5">HTML5</h3><p>HTML5可以实现网页中所需的音频、视频和拖放。<br>可查看 <a href="http://www.w3school.com.cn/html5/" target="_blank" rel="external">http://www.w3school.com.cn/html5/</a> 学习</p>
+<h3 id="CSS3">CSS3</h3><p>CSS3引入了Transition，使的原先瞬间变化的东西变得有一个过渡的过程，也就是有了动画的效果，让人看起来更舒服。<br>CSS3可以编写较多的动画效果，自己编写动画执行时间，是美化网页的好工具。<br>可查看 <a href="http://www.w3school.com.cn/css3/index.asp" target="_blank" rel="external">http://www.w3school.com.cn/css3/index.asp</a> 学习</p>
 
       
     </div>
