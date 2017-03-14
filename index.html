@@ -192,6 +192,290 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-简谈ES6学习心得" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/14/简谈ES6学习心得/" class="article-date">
+  	<time datetime="2017-03-14T08:59:11.498Z" itemprop="datePublished">2017-03-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/14/简谈ES6学习心得/">简谈ES6学习心得</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="let和const">let和const</h3><ul>
+<li>let和const具有块级作用域，只在当前块级作用域能访问到</li>
+<li>let和const都没有变量声明提升，会有暂时性死区，不可重复声明。<br> <code>test = &#39;abc&#39;;
+ let test;   //报错</code></li>
+<li>const声明的是常量，在声明之后无法修改它的值，但是声明对象可以修改其属性。<br> <code>const obj = {};
+ obj.a = 1;</code></li>
+<li>典型用例：for循环<br><code>for(let i=0; i&lt;10; i++) {
+ //...
+}
+console.log(i) //报错</code></li>
+</ul>
+<h3 id="变量结构赋值">变量结构赋值</h3><p>1.解构不成功，变量值则为undefined<br>2.解构允许有默认值（解构右边值不严格等于undefined，默认值不生效）：</p>
+<pre><code><span class="built_in">let</span> [<span class="built_in">test</span> = <span class="number">1</span>] = [undefined]; //<span class="built_in">test</span>为<span class="number">1</span>
+<span class="built_in">let</span> [<span class="built_in">test</span> = <span class="number">1</span>] = [null];  //<span class="built_in">test</span>为null
+</code></pre><p>3.函数参数的解构赋值+默认值有助于阅读代码和增加代码可维护性：</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">({x = 0, y=0} = {})</span> </span>{
+    <span class="keyword">return</span> [x, y];
+}
+<span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">({x, y} = {x:0, y:0})</span> </span>{
+    <span class="keyword">return</span> [x, y];
+}
+第一种写法是给参数赋默认值，等号右边传入参数再进行解构赋值；
+第二种写法是在没传参数情况下，整个参数对象有默认值，否则等号右边引用传入对象进行解构赋值。
+</code></pre><h3 id="Promise对象">Promise对象</h3><p>Promise异步编程解决回调地狱~<br>Promise特点：<br>1.状态不受影响，有pending，resolved，rejected三种状态，并且状态一旦改变就不会再变化，在变化以后再给Promise增加回调函数也能获取到一样的结果。<br>2.Promise对象无法取消，在创建时就立即执行，而且Promise内部错误不会反应到外部，除非设定回调函数，另外，Promise在Pending时无法得知是刚开始还是即将结束。</p>
+<p>用法：</p>
+<pre><code><span class="keyword">var</span> promise <span class="keyword">new</span> Promise(<span class="function"><span class="keyword">function</span><span class="params">(resolve, reject)</span> </span>{
+    <span class="keyword">if</span>(...) {
+        resolve(value);
+    }<span class="keyword">else</span> {
+        reject(error);
+    }
+});
+promise.then(<span class="function"><span class="keyword">function</span><span class="params">(value)</span> </span>{
+    <span class="comment">//resolve</span>
+}, <span class="function"><span class="keyword">function</span><span class="params">(error)</span> </span>{
+    <span class="comment">//reject</span>
+}).<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span><span class="params">(error)</span> </span>{
+    <span class="comment">//处理前面发生的错误</span>
+}).done() <span class="comment">//确保抛出错误，因为catch出错它不会自己抓取自己的错误，可提供onFulfilled和Rejected回调函数</span>
+.<span class="keyword">finally</span>() <span class="comment">//无论如何都会执行的操作</span>
+</code></pre><h2 id="箭头函数-this">箭头函数-this</h2><p>ES6里边比较大头的一个家伙~<br>首先箭头函数可以简便函数的写法，</p>
+<pre><code>function test(arg) {
+    ...
+}
+可写成 test = arg =&gt; <span class="decorator">{...}</span>
+function test(x, y) {
+    ...
+}
+可写成 test = (x, y) =&gt; <span class="decorator">{...}</span>
+</code></pre><p>但是箭头函数里边比较不同的一点是this的指向：<br><strong>箭头函数的this是在定义的时候确定的，而不是在运行时灵活变动的，而箭头函数本身是没有this的，它的this也就是定义时它的上一层函数（或全局变量）的this。</strong><br><strong>例如：</strong></p>
+<pre><code><span class="keyword">var</span> a = <span class="string">'window'</span>;
+<span class="keyword">let</span> obj = {
+    a : <span class="string">'abc'</span>,
+    test : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);
+    }
+}
+obj.test() <span class="comment">//'abc'</span>
+
+<span class="keyword">let</span> obj1 = {
+    a : <span class="string">'abc'</span>,
+    test : () =&gt; {
+        <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);
+    }
+}
+obj1.test() <span class="comment">//'window'</span>
+</code></pre><p>##ES6模块与CommonJS模块</p>
+<ol>
+<li>ES6模块通过import引入，通过export(或exports.name)将模块接口暴露出去，当然也有合并写法，直接exports<br>… from … (引入并暴露出去)。CommonJS通过require引入模块，通过module.exports暴露接口。</li>
+<li>ES6是预编译的，而CommonJS是在运行时确定值的，只是一个值的拷贝，所以使用require(…).name是不保险的，当执行到这句的时候，name不一定存在，就会报错，而ES6则只是一种引用，只要引用存在就不会报错。</li>
+<li>CommanJS模块在加载完后会生成一个对象：<br>``｛<pre><code>id: 'name',
+exports: <span class="decorator">{...}</span>,
+loaded: <span class="literal">true</span>,
+...
+</code></pre>｝``<br>当多次执行require命令时，也不会多次执行同一个模块，只从模块的exports中取值，除非手动清除系统缓存。</li>
+<li>CommanJS在遇到循环加载时，只会输出已经执行的部分，还未执行部分则不输出，a引用b，b又引用a，则在执行b的过程中，会只获得a的部分引用，执行完b再将执行权交还给a执行，也就会出现<strong>第2点</strong>中不安全现象。</li>
+<li>ES6在遇到循环加载时，由于ES6的import不是获取到值，而是一种引用，所以当a引用b，b又引用a时，a执行中遇到引用b，执行b，b引用a发现a已经执行，继续执行b，直至执行完b再将执行权限交给a（此过程如果b引用a中还没执行完的变量，则为undefined）。</li>
+<li>引用阮一峰大神的ES6电子书中的一个例子：<br><code>// a.js
+import {bar} from &#39;./b.js&#39;;
+export function foo() {
+console.log(&#39;foo&#39;);
+bar();
+console.log(&#39;执行完毕&#39;);
+}
+foo();
+// b.js
+import {foo} from &#39;./a.js&#39;;
+export function bar() {
+console.log(&#39;bar&#39;);
+if (Math.random() &gt; 0.5) {
+foo();
+}
+}</code><br>ES6在这段代码中能正常执行，而CommonJS会报错，因为b在执行时，foo为null，foo()即会报错。</li>
+<li>当然，两者还是可以兼容互用的，当一个模块使用ES6的方式暴露出来，比如export default name，在CommonJS中可以使用require(…).default属性获取到暴露的接口。</li>
+</ol>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-谈谈自家的许愿墙" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/14/谈谈自家的许愿墙/" class="article-date">
+  	<time datetime="2017-03-14T08:59:01.958Z" itemprop="datePublished">2017-03-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/14/谈谈自家的许愿墙/">谈谈自家的许愿墙</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>有个词语挺有意思的，叫老生常谈，顾名思议，老书生经常谈（虽然原意为老书生经常说的话），看来我也要成为老书生了，竟是谈~来回归正题，我们来谈谈自家的许愿墙。</p>
+</blockquote>
+<h2 id="项目背景">项目背景</h2><p>广工大学城校区是典型的阳盛阴衰的，每年的女生节在广工算是一个比较隆重的节目了吧，为了让女生享受到更加便利的关注，为了让更多的男生女生们参与进大学丰富多彩的活动中，许愿墙就诞生了，并传承至今。</p>
+<h2 id="项目简介">项目简介</h2><p>1.许愿墙在去年是开发成为微信的web app，相比往年增加了游戏这个新功能（虽然反响并不是特别好(┬＿┬)）。<br>2.我们团队先从项目需求入手进行分析，广工的背景让这个项目的生命周期在每年可以持续一周左右，除了提供基本的女生许愿男生领取愿望功能外，我们还希望加入一些新的元素吸引更多的人关注，类似接金币游戏就此诞生，画面展现出了男女生们的青春活力。<br>3.另外在这里不得不提提我们的暗恋匹配功能啦，大家写下心目中的他（她），若双方互相暗恋，就能告知对方，成就了数对小情侣们，成功牵线是我们的骄傲，是我们的自豪o(∩_∩)o。<br>4.考虑到保护女生们的信息安全问题，我们采取微信授权认证，只有男生领取了女生的愿望，才能获取女生相关信息，让他们能够进行交流而实现愿望。<br>5.项目在前端采用react+mobx+es6，引用gulp-webpack构建打包，后台使用nodejs+express构建，并使用mongo数据库存储相关信息数据（别想偷信息哈）。</p>
+<h2 id="技术介绍">技术介绍</h2><h3 id="前端"><strong>前端</strong></h3><p><strong>React：</strong><br>要问到前端方面为什么选用react呢，而不用轻量级vue和boss级angular呢，挑选技术栈时它们确实一直在向我们招手，都想要朕重用它们😄，vue虽然用的特别的舒服，style+template+javascript组成一个vue文件，每一个都那么的清晰，用的那么舒服，可是在前面做过几个项目都用的vue，这次我们想多接触下别的框架，扩宽知识广度，而angular相对比较适合大型应用，使用脏检测的方式跟踪更新数据，在不熟悉的情况下使用会有比较多的坑，因此我们还是选择了也比较热门的react进行开发。<br>react的virtual DOM（虚拟DOM）使得项目可以不用直接操作DOM，而是通过虚拟的DOM进行操作，然后经过改进的diff算法计算后，通过render函数进行更新，大大提高了项目的性能。<br>来来来，我们来了解了解react的virtual DOM是怎么回事，virtual DOM把原生的DOM进行了抽象，在生成页面的时候会同时产生原生DOM的副本，我们在js的操作是先对副本进行操作，然后使用diff算法对比，对发生变化的部分进行自动更新（也可以人为控制生命周期）而不用全部重新渲染。<br>传统的DOM diff算法是通过遍历节点实现的，算法复杂度达到了O(n^3)，指数型的算法复杂度在节点数多的时候效率是特别的低的，而react通过3个策略改进了diff算法，使其复杂度仅为O(n)，大大提高了计算速度。<br><strong>React diff策略：</strong></p>
+<ol>
+<li>在web UI中DOM节点的跨层级操作是特别少的，基本可以忽略不计。</li>
+<li>相同组件有相似的结构，不同组件有不同的结构。</li>
+<li>对同一层次的节点可以通过唯一的id进行区分。</li>
+</ol>
+<p><strong>第一点(tree diff)</strong><br>由于跨层级操作少，可以只对两棵树进行同层对比，当发现某一层次节点不存在或者新增了，则新增该节点或者删除该节点及其子节点（不会再对子节点进行比较）。<br>但是当出现跨层级的移动操作，React diff就会对已经不存在节点直接删除，而对新存在的节点进行新增，而不是直接通过移动实现，这样就会影响性能，所以还是需要尽量避免进行跨层级的操作。</p>
+<p><strong>第二点(component diff)</strong><br>React diff在发现相同的组件时就会进行tree diff比较，而不同的组件则直接删除更换，不会再进行进一步的比较，这又通过节省diff计算大大提高了计算速度，当然用户可以通过shouldComponentUpdate()返回true还是false来自己决定是否对该组件及其子组件进行更新。</p>
+<p><strong>第三点（element diff）</strong><br>React diff在同层次发现不同节点直接就删除替换了，那么有没可能只是顺序的不同，而只是调换一下顺序呢，当然有~<br>所以通过给节点标上唯一的id，那么节点就能通过对比新老集合的位置，只进行移动，而不需要进行删除及创建插入，这样就能更高效的进行更新了。</p>
+<p>以上只是个人看了相关内容后的理解总结，有什么不对的可以评论改进喔~<br>在此留下收藏的资料供大家看：<br><a href="https://zhuanlan.zhihu.com/p/20346379?columnSlug=purerender" target="_blank" rel="external">React源码解析+diff算法</a><br><a href="https://supnate.github.io/react-dom-diff/index.html" target="_blank" rel="external">github自己体会下diff算法（打开控制台观看）</a></p>
+<p><strong>mobx：</strong><br>对于mobx的了解倒还不是特别的深，稍微了解了下mobx和redux的区别，redux是有action，store和view三层，通过reducer修改数据后经过双向数据绑定达到更新试图的目的，但是redux会出现多订阅，粗粒度的缺点，比如：<br>if(c) {<br>    return a;<br>}<br>return b;<br>这时候会对a,b,c都进行监听，然而在c为true的时候，b就没有进行使用了；<br>粗粒度则是在只对arr[0].name进行了修改引用，而监听是针对的arr的；<br>由于许愿墙只需要进行store到view层的操作对使用的用户数据进行存储，因此采用mobx相对比较小，学习使用成本也相对比较低，通过es6的修饰器引入mobx的observable接口，在所有页面共享该用户的数据，减少各个页面对用户数据的传递导致组件的更新或者因此而导致的增加http请求。</p>
+<p><strong>gulp-webpack:</strong><br>使用gulp进行本地的调试开发，自动更新页面大大提高了开发的效率，通过webpack引入css-loader、style-loader、url-loader分别对css的url进行支持，对css进行支持，对图片url进行支持，还引入postcss-loader（autoprefixer插件）自动增加css前缀适配多端，另外当然是引入babel-preset-es2015,babel-preset-react和babel-preset-stage-num(0~3)对es6进行解析。</p>
+<h3 id="后台"><strong>后台</strong></h3><p>后台使用nodejs+express框架开启服务器，通过express监听各个请求，设置路由专门处理相应的请求，另外在对数据库的操作再另外设置一个代理，路由中通过代理对数据库进行操作后作出请求的相应。<br>后台还需要通过引入bodyparser，cookieparser来对body json数据以及cookie进行解析使用。</p>
+<h2 id="问题汇总">问题汇总</h2><p>1.首先感受最深刻的就是游戏性能问题的，由于首次接触canvas的游戏开发，对性能的研究基本没有，在掉落“金币”时的掉落动画会有些许卡顿，体验极其不友好。<br><strong>改进：</strong>通过相关研究，在掉落“金币”时，对其对象进行重复利用，通过循环产生的“金币”，在经过下降后由于“金币”会消失在视图中，通过设置一定数量上限让“金币”达到上限时再重新从0开始赋予“金币”属性。</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">chansheng</span><span class="params">()</span> {</span>
+    <span class="keyword">if</span> <span class="params">(shi % h == <span class="number">0</span>)</span> {
+        <span class="keyword">for</span> <span class="params">(var j = <span class="number">2</span> * chi; j &lt; <span class="number">2</span> * <span class="params">(chi + <span class="number">1</span>)</span>; j++)</span> {
+            tu[j] = new object<span class="params">()</span>;
+            ...
+            var range = canvasW - w <span class="built_in">*</span> B;
+            var i = Math.<span class="built_in">round</span><span class="params">(Math.random<span class="params">()</span> * range)</span>;
+            <span class="keyword">if</span> <span class="params">(j == <span class="number">2</span> * chi + <span class="number">1</span>)</span> {
+                while <span class="params">(Math.abs<span class="params">(i - tu[<span class="number">2</span> * chi].x)</span> &lt; w * B)</span> {
+                    i = Math.<span class="built_in">round</span><span class="params">(Math.random<span class="params">()</span> * range)</span>;
+                }
+            }
+            tu[j].x = i;
+            tu[j].y = -Math.<span class="built_in">round</span><span class="params">(Math.random<span class="params">()</span> * <span class="number">100</span>)</span>;
+        }
+        chi++;
+        <span class="keyword">if</span> <span class="params">(chi == <span class="number">50</span>)</span> chi = <span class="number">0</span>;  <span class="comment">//重置数量</span>
+    }
+    shi++;
+}
+</code></pre><p>2.在性能的优化方面还有就是可以通过缓存图像进行提高性能。<br><strong>改进：</strong></p>
+<pre><code><span class="atom">var</span> <span class="atom">cacheCanvas</span> = [],
+    <span class="atom">cacheCtx</span> = [],
+    <span class="atom">down</span> = [];
+<span class="atom">for</span> (<span class="atom">var</span> <span class="atom">i</span> = <span class="number">0</span>; <span class="atom">i</span> &lt;= <span class="number">4</span>; <span class="atom">i</span>++) {
+    <span class="atom">down</span>[<span class="atom">i</span>] = <span class="atom">new</span> <span class="name">Image</span>();
+}
+<span class="atom">down</span>[<span class="number">0</span>].<span class="atom">src</span> = <span class="string">'images/down/boy.png'</span>;
+<span class="atom">down</span>[<span class="number">1</span>].<span class="atom">src</span> = <span class="string">'images/down/+1s.png'</span>;
+<span class="atom">down</span>[<span class="number">2</span>].<span class="atom">src</span> = <span class="string">'images/down/+10KG.png'</span>;
+<span class="atom">down</span>[<span class="number">3</span>].<span class="atom">src</span> = <span class="string">'images/down/special.png'</span>;
+<span class="atom">down</span>[<span class="number">4</span>].<span class="atom">src</span> = <span class="string">'images/down/love.png'</span>;
+<span class="atom">for</span> (<span class="atom">var</span> <span class="atom">i</span> = <span class="number">0</span>; <span class="atom">i</span> &lt;= <span class="number">4</span>; <span class="atom">i</span>++) {
+    <span class="atom">down</span>[<span class="atom">i</span>].<span class="atom">onload</span> = <span class="atom">function</span>() {
+        <span class="atom">for</span> (<span class="atom">var</span> <span class="atom">i</span> = <span class="number">0</span>; <span class="atom">i</span> &lt;= <span class="number">4</span>; <span class="atom">i</span>++) {
+            <span class="atom">cacheCanvas</span>[<span class="atom">i</span>] = <span class="atom">document</span>.<span class="atom">createElement</span>(<span class="string">'canvas'</span>);  //创建多个<span class="atom">canvas</span>元素把图片预先缓存，需要时再取出
+            <span class="atom">cacheCtx</span>[<span class="atom">i</span>] = <span class="atom">cacheCanvas</span>[<span class="atom">i</span>].<span class="atom">getContext</span>(<span class="string">'2d'</span>);
+            <span class="atom">cacheCanvas</span>[<span class="atom">i</span>].<span class="atom">width</span> = <span class="atom">down</span>[<span class="atom">i</span>].<span class="atom">width</span> * <span class="name">B</span>;
+            <span class="atom">cacheCanvas</span>[<span class="atom">i</span>].<span class="atom">height</span> = <span class="atom">down</span>[<span class="atom">i</span>].<span class="atom">height</span> * <span class="name">B</span>;
+            <span class="atom">cacheCtx</span>[<span class="atom">i</span>].<span class="atom">drawImage</span>(<span class="atom">down</span>[<span class="atom">i</span>], <span class="number">0</span>, <span class="number">0</span>, <span class="atom">down</span>[<span class="atom">i</span>].<span class="atom">width</span> * <span class="name">B</span>, <span class="atom">down</span>[<span class="atom">i</span>].<span class="atom">height</span> * <span class="name">B</span>)
+        }
+    }
+}
+</code></pre><p>3.游戏在ios和安卓的适配方面出现了两个问题，一是在ios上iframe标签无法正常工作，二是ios9+的重力感应deviceorientation事件触发频率不同。<br><strong>改进：</strong> iframe标签无法工作后统一使用外链的形式，由于男女进入的游戏是不同版本的，在react的jsx中先判断用户性别，后使用跳转的方式进入游戏。由于触发频率的不同，导致ios9+与其他用户的移动速度不同，ios9+会比较快，造成不公平现象，于是采用加入时间验证的方式使游戏相对公平。</p>
+<pre><code><span class="keyword">var</span> timeControl = <span class="keyword">new</span> <span class="built_in">Date</span>();  <span class="comment">//记录一次触发时间</span>
+<span class="built_in">window</span>.addEventListener(<span class="string">"deviceorientation"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>{
+    <span class="keyword">if</span> (<span class="keyword">new</span> <span class="built_in">Date</span>() - timeControl &gt;= <span class="number">30</span>) {   <span class="comment">//时间相隔大于等于30ms再触发</span>
+        <span class="keyword">var</span> move = event.gamma;
+        <span class="keyword">if</span> (move &lt; <span class="number">0</span>) {
+            sprite.x = sprite.x - moveSpeed;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (move &gt; <span class="number">0</span>) {
+            sprite.x = sprite.x + moveSpeed;
+        }
+        <span class="keyword">if</span> (sprite.x + playerWidth &gt;= canvasW) sprite.x = canvasW - playerWidth;
+        <span class="keyword">else</span> <span class="keyword">if</span> (sprite.x &lt;= <span class="number">0</span>) sprite.x = <span class="number">0</span>;
+        timeControl = <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">//触发结束重置时间</span>
+    }
+}, <span class="literal">true</span>);
+</code></pre><p>4.react的路由跳转问题，直接引用this.context.router.push(path)出错。<br><strong>改进：</strong> 在react组件中需加入contextType对象。</p>
+<pre><code>ComponentName.contextTypes = {
+    router: React.propTypes.<span class="keyword">object</span>.isRequired
+} <span class="comment">//组件外加入的所以加上组件名字</span>
+</code></pre>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-js高程学习心得（二）--原型与原型链" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -1457,144 +1741,6 @@ console.<span class="built_in">log</span><span class="params">(a)</span>; <span 
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-游" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/08/11/游/" class="article-date">
-  	<time datetime="2015-08-11T14:01:27.000Z" itemprop="datePublished">2015-08-11</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/08/11/游/">游</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>培训结束了，我们苦逼的游玩生涯也就开始了~~</p>
-<h2 id="首站：深圳">首站：深圳</h2><p>探望“老人家”时间到啦，是去看鸡汤经理还是去看熊桑呢，深圳跟北京。。。想想，去北京太过遥远了，我们要放弃熊桑了(┬＿┬)，所以我们来到了深圳，鸡汤经理之家。</p>
-<p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182149.jpg?imageView2/2/w/203/h/203&amp;e=1439308192&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:cm8id3eI1ge3udFVu4VZoClkkmQ" alt="">  <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150811113110.jpg?imageView2/2/w/203/h/203&amp;e=1439350353&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:nH69gLWG5KemdMicR6OjHFZITXs" alt=""><br>坐了N久的大巴车+地铁+吃了一木桶辣椒饭，我们终于到了鸡汤经理之家了(┬＿┬)，别惹我，让我趴一会。。。</p>
-<p>砰砰砰几声，似乎是暴君叫我们起床了，神一样的bra跟一群女生出去逛街了，一逛就是9个小时，实在是太可怕了。码农就是码农，出去玩也少不了打码环节，捞文桑又给我们上了一下课。晚上8个男生挤在max的房间里睡觉，max默默的去客厅睡了，还是max机智，8个人的房间，只有一个人有被子盖，其他的都冷的难睡。。。</p>
-<p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182137.jpg?imageView2/2/w/203/h/203&amp;e=1439308185&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:9p4LSI5qGP-tpN4lTt3ks6kbCbM" alt=""></p>
-<h2 id="次站：西涌">次站：西涌</h2><p>摸摸索索花了好几个小时才到了大鹏站，然后打仗似的上了m232进入西涌海滩，进了民宿后还是一样，别惹我，让我趴一会。。。</p>
-<p>起来后就是激动人心的烧烤了，也是我们唯一获得进食的机会，要好好珍惜，(┬＿┬)。。这一顿，烤肠成了主食，喵烤的眼泪汪汪的，我们负责。。。吃。</p>
-<p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150811000415.jpg?imageView2/2/w/203/h/203&amp;e=1439309120&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:JQW7SqFi5XtJmbQH1BllG-MxtuA" alt=""></p>
-<p>晚上海滩只看到了涨潮的情景，时候不对，不怎么能玩水。天黑了就开始撕名牌哈，其实名字都看不到，凭感觉摸索了，不得不提的是，大果这个队友真给力，凶残的我都怕了。。。俗话说的好，狭路相逢勇者胜，嘿嘿，道理还是很有的。</p>
-<p>晚上大家聚在一块聊天，虽然这不是稀有的事情了，但都是非常愉快的，这估计是我们除了海滩玩耍外最欢快的环节了吧。</p>
-<p>看，翔是捞文的，捞文是暴君的，翔也是暴君的，那谁是我的呢？？</p>
-<p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182151.jpg?imageView2/2/w/203/h/203&amp;e=1439309160&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:qgc-QN61IIRBc9T_Ww-YhMgysBc" alt=""> <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182157.jpg?imageView2/2/w/203/h/203&amp;e=1439309166&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:ouI3Gy7guf_oZxDg3TTa0mXldQY" alt=""></p>
-<p><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182209.jpg?imageView2/2/w/203/h/203&amp;e=1439309176&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:7Bpw4qFSzf2NyeuUf84mQ_yNWf0" alt=""></p>
-<h2 id="终点站：家">终点站：家</h2><p>两夜冷的难睡，一回家还真是很累，出海滩，等公交，又花几个小时时间，大家都各回各家各找各妈了，培训正式结束了，暑假开始了。。。要学的东西还很多，不说了，忙活去。<br><img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182117.jpg?imageView2/2/w/203/h/203&amp;e=1439309153&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:hVKDbBM8H44uS6O9krIlU5QWb10" alt="">  <img src="http://7xl01i.com1.z0.glb.clouddn.com/QQ%E5%9B%BE%E7%89%8720150810182154.jpg?imageView2/2/w/203/h/203&amp;e=1439309161&amp;token=_zBQTrcWLsvBtfAoal3ufJWTfFXWQF-W8RYGHab3:HJm2kXhC_qtn1CbduzUaI76emFA" alt=""></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐/">娱乐</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-family" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/08/02/family/" class="article-date">
-  	<time datetime="2015-08-02T06:22:45.000Z" itemprop="datePublished">2015-08-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/08/02/family/">family</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>加入工作室也有1个多月了，一起培训一起看电影一起开玩笑，有组织有纪律有学习氛围有娱乐氛围有运动氛围，不管是学习环境还是娱乐环境，都是非常棒的，是很好的体验。<br>max : 协同前端组的大大大，培养了一届又一届的人才，鸡汤经理就出自他之 手，厉害又不失幽默。</p>
-<p>经理 : 鸡汤经理，称号怎么来的当然是喝多了鸡汤，说多了鸡汤话，人也变得人高马大，力大无比，明年大家伙得合力丢下水的目标之一。</p>
-<p>熊 : 喜欢小哈的熊，好像有点歧义，算了不解释了，都是前端的技术人员，能力十足，但是听说有缝面跪的习俗，也是明年大家伙要合力丢下水的目标。</p>
-<p>暴君 : 　人称鱼，捞文的。。。是我们的暴君，暴君说的话我们不得不听，当然暴君也有听从手下建议的时候。另外，在暴君的带领下，我们是一个非常有自主意识的团队︿(￣︶￣)︽(￣︶￣)︿。</p>
-<p>捞文桑 :   捞文桑，这位来自地球的兄弟星球的人类，是暴君的。。。前端技术顾问，每天跑步，他的坚持不懈精神为他带来了体重的福利，是增还是减呢，且看下回分解。︿(￣︶￣)︽(￣︶￣)︿。</p>
-<p>小狮 : 考核时期的带领师兄，玩的了游戏做的了爬虫，让我知道程序员还可以应用到很多日常的娱乐中，让自己的代码成为别人的bug，嘿嘿。</p>
-<p>小蛙哥 : 诶嘿嘿嘿，小蛙哥，也是个喜欢锻炼的人，一位好玩的设计师，搞笑的上课氛围让课堂很有趣，虽然我听不懂。</p>
-<p>小哈 : haandpig，这是什么，我也不知道。小哈，同班同学，现在也是同事了，同样的程序员，接下来得一起去扛住猥琐的<em>\</em>*。</p>
-<p>bra : bra，从不吃外卖的小哥，优秀的设计师，拥有丰富的电影、搞笑经验。</p>
-<p>大瓜 ： 这就来了一个新名词了，瓜队友，对，没错，瓜队友现在已经能够超越猪队友了，那么，瓜队友跟猪队友会有什么事呢，好吧他们赢了。同时也是典型的吃货，太可怕了，下学期要不要招点土豪养大瓜。</p>
-<p>大毛 ：　有丰富想象力的设计师，涉及多方面的学习，真是难为刚入门的程序员跟着她做项目了哈。</p>
-<p>大果 ： 开着电摩的小土豪，程序员队友之一，又称好人果，火龙果。有着让人羡慕嫉妒恨的舍友。</p>
-<p>翠 : 　这是我看的第一位玩LOL的女生，设计师师姐，以不吃晚饭为途径，(┬＿┬)，真是不容易啊。</p>
-<p>瞄 :　同乡师姐，设计师一枚，原先是羊，据说学猫叫学多了硬生生把羊变成瞄了。</p>
-<p>希雯 : 目前在德国学习，还没有太多的交流，所以也不是很了解，只能说，很厉害。</p>
-<p>哈哈现在前端组可谓是分成了两部分，一部分是吃不胖族，在锻炼ing以求增肥，另一部分是减肥族，整天嚷嚷着要减肥，在锻炼ing以求减肥O(∩_∩)O。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐/">娱乐</a></li></ul>
 	</div>
 
       
