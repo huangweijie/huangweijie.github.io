@@ -426,23 +426,11 @@ obj1.test() <span class="comment">//'window'</span>
 <li>CommanJS模块在加载完后会生成一个对象：<br>{<br>id: ‘name’,<br>exports: {…},<br>loaded: true,<br>…<br>｝<br>当多次执行require命令时，也不会多次执行同一个模块，只从模块的exports中取值，除非手动清除系统缓存。</li>
 <li>CommanJS在遇到循环加载时，只会输出已经执行的部分，还未执行部分则不输出，a引用b，b又引用a，则在执行b的过程中，会只获得a的部分引用，执行完b再将执行权交还给a执行，也就会出现<strong>第2点</strong>中不安全现象。</li>
 <li>ES6在遇到循环加载时，由于ES6的import不是获取到值，而是一种引用，所以当a引用b，b又引用a时，a执行中遇到引用b，执行b，b引用a发现a已经执行，继续执行b，直至执行完b再将执行权限交给a（此过程如果b引用a中还没执行完的变量，则为undefined）。</li>
-<li>引用阮一峰大神的ES6电子书中的一个例子：<pre><code><span class="comment">// a.js</span>
-<span class="keyword">import</span> {bar} <span class="keyword">from</span> <span class="string">'./b.js'</span>;
-<span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>{
-  <span class="built_in">console</span>.log(<span class="string">'foo'</span>);
-  bar();
-  <span class="built_in">console</span>.log(<span class="string">'执行完毕'</span>);
-}
-foo();
-<span class="comment">// b.js</span>
-<span class="keyword">import</span> {foo} <span class="keyword">from</span> <span class="string">'./a.js'</span>;
-<span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>{
-  <span class="built_in">console</span>.log(<span class="string">'bar'</span>);
-  <span class="keyword">if</span> (<span class="built_in">Math</span>.random() &gt; <span class="number">0.5</span>) {
-    foo();
-  }
-}
-</code></pre>ES6在这段代码中能正常执行，而CommonJS会报错，因为b在执行时，foo为null，foo()即会报错。</li>
+<li>引用阮一峰大神的ES6电子书中的一个例子：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;bar&#125; <span class="keyword">from</span> <span class="string">'./b.js'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'foo'</span>);</span><br><span class="line">  bar();</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'执行完毕'</span>);</span><br><span class="line">&#125;</span><br><span class="line">foo();</span><br><span class="line"><span class="comment">// b.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;foo&#125; <span class="keyword">from</span> <span class="string">'./a.js'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'bar'</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Math</span>.random() &gt; <span class="number">0.5</span>) &#123;</span><br><span class="line">    foo();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>ES6在这段代码中能正常执行，而CommonJS会报错，因为b在执行时，foo为null，foo()即会报错。</p>
+<ol>
 <li>当然，两者还是可以兼容互用的，当一个模块使用ES6的方式暴露出来，比如export default name，在CommonJS中可以使用require(…).default属性获取到暴露的接口。</li>
 </ol>
 
