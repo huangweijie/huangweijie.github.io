@@ -426,22 +426,7 @@ obj1.test() <span class="comment">//'window'</span>
 <li>CommanJS模块在加载完后会生成一个对象：<br>{<br>id: ‘name’,<br>exports: {…},<br>loaded: true,<br>…<br>｝<br>当多次执行require命令时，也不会多次执行同一个模块，只从模块的exports中取值，除非手动清除系统缓存。</li>
 <li>CommanJS在遇到循环加载时，只会输出已经执行的部分，还未执行部分则不输出，a引用b，b又引用a，则在执行b的过程中，会只获得a的部分引用，执行完b再将执行权交还给a执行，也就会出现<strong>第2点</strong>中不安全现象。</li>
 <li>ES6在遇到循环加载时，由于ES6的import不是获取到值，而是一种引用，所以当a引用b，b又引用a时，a执行中遇到引用b，执行b，b引用a发现a已经执行，继续执行b，直至执行完b再将执行权限交给a（此过程如果b引用a中还没执行完的变量，则为undefined）。</li>
-<li>引用阮一峰大神的ES6电子书中的一个例子：<br><code>// a.js
-import {bar} from &#39;./b.js&#39;;
-export function foo() {
-console.log(&#39;foo&#39;);
-bar();
-console.log(&#39;执行完毕&#39;);
-}
-foo();
-// b.js
-import {foo} from &#39;./a.js&#39;;
-export function bar() {
-console.log(&#39;bar&#39;);
-if (Math.random() &gt; 0.5) {
-foo();
-}
-}</code><br>ES6在这段代码中能正常执行，而CommonJS会报错，因为b在执行时，foo为null，foo()即会报错。</li>
+<li>引用阮一峰大神的ES6电子书中的一个例子：<br>// a.js<br>import {bar} from ‘./b.js’;<br>export function foo() {<br>console.log(‘foo’);<br>bar();<br>console.log(‘执行完毕’);<br>}<br>foo();<br>// b.js<br>import {foo} from ‘./a.js’;<br>export function bar() {<br>console.log(‘bar’);<br>if (Math.random() &gt; 0.5) {<br>foo();<br>}<br>}<br>ES6在这段代码中能正常执行，而CommonJS会报错，因为b在执行时，foo为null，foo()即会报错。</li>
 <li>当然，两者还是可以兼容互用的，当一个模块使用ES6的方式暴露出来，比如export default name，在CommonJS中可以使用require(…).default属性获取到暴露的接口。</li>
 </ol>
 
