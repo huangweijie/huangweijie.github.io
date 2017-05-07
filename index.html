@@ -192,6 +192,76 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-前端跨域" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/前端跨域/" class="article-date">
+  	<time datetime="2017-05-07T08:28:15.892Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/前端跨域/">前端跨域</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这里所谓的跨域问题，其实就是javascript为了在不同的域之间进行数据通信，由于浏览器具有同源策略，对于不同域(协议，域名，端口不同)之间的数据通信有一定的安全限制。</p>
+<h2 id="解决跨域问题：">解决跨域问题：</h2><p><strong>1.服务端加上响应头</strong><br><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword"><span class="common">header</span></span>(<span class="string">"Access-Control-Allow-Origin: *"</span>);</span><br><span class="line"><span class="keyword"><span class="common">header</span></span>(<span class="string">"Access-COntrol-Allow-Methods: GET,POST"</span>);</span><br></pre></td></tr></table></figure></p>
+<p><strong>2.jsonP(json with padding)</strong><br>jsonP跨域主要利用script src引入的js文件是没有受到同源策略的限制的<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"http://domain2.com/getjson?jsonp=parseResponse"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>jQuery中的实现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type: <span class="string">'GET'</span>,</span><br><span class="line">    url: <span class="string">'...'</span>,</span><br><span class="line">    dataType: <span class="string">'jsonp'</span>,</span><br><span class="line">    jsonpCallback: <span class="string">'cb'</span>, <span class="comment">//回调函数名</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">mes</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$.getJSON(url(<span class="string">"...&amp;jsoncallback=?"</span>),data,<span class="function"><span class="keyword">function</span>(<span class="params">mes</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//后台将？随机成一个方法名，进行返回</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>3.中间代理</strong><br>网上看到最多的中间代理就是iframe了，但是它的兼容性还是需要考虑的（在iphone上体验过iframe标签无效）</p>
+<h3 id="document-domain">document.domain</h3><p> www.a.com/a.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.com'</span>;</span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>); <span class="comment">//创建交互iframe</span></span><br><span class="line">ifr.src = <span class="string">'http://www.script.a.com/b.html'</span>;</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line">ifr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> doc = ifr.contentDocument || ifr.contentWIndow.document; <span class="comment">//获取交互iframe的document进行操作</span></span><br><span class="line">    ifr.onload = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>www.script.a.com/b.html:<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.html'</span>; <span class="comment">//相同主域</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="location-hash">location.hash</h3><p>a.com/a.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建交互iframe</span></span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">ifr.src = <span class="string">'http://b.com/b.html#hash'</span>; <span class="comment">//交互iframe地址，可带hash传入</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line"></span><br><span class="line"><span class="comment">//轮询自身hash是否改变，以便获取响应</span></span><br><span class="line">setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = location.hash ? location.hash.substring(<span class="number">1</span>) : <span class="string">''</span>; <span class="comment">//获取hash，substring(1)去#</span></span><br><span class="line">&#125;,<span class="number">2000</span>)</span><br></pre></td></tr></table></figure></p>
+<p>b.com/b.html<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = location.hash;   <span class="comment">//获取传入的数据(带#)</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    parent.location.hash = <span class="string">'...'</span> <span class="comment">//给父窗口响应数据</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// ie，chrome具有安全机制不同域无法修改parent的hash值</span></span><br><span class="line">    <span class="comment">//创建中间iframe代理，域在a.com下</span></span><br><span class="line">    <span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">    ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">    ifr.src = <span class="string">'http://a.com/c.html#hash'</span>; <span class="comment">//将响应返回数据写入代理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>a.com/c.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parent<span class="class">.parent</span><span class="class">.loaction</span><span class="class">.hash</span> = location<span class="class">.hash</span><span class="class">.substring</span>(<span class="number">1</span>) <span class="comment">//修改最上层窗口hash，将返回数据写入</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="window-name">window.name</h3><p>a.com/a.html:<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">ifr.src = <span class="string">'http://b.com/b.html'</span>;</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line"><span class="comment">//触发或轮询获取ifr.contentWindow.name</span></span><br></pre></td></tr></table></figure></p>
+<p>b.com/b.html:<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.name = <span class="string">'data'</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="H5_postMessage()">H5 postMessage()</h3><p>a.com/index.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&lt;iframe src="b.com/index.html"&gt;&lt;/iframe&gt;</span></span><br><span class="line"><span class="tag">var</span> ifr = window<span class="class">.frame</span>[<span class="number">0</span>].<span class="function"><span class="title">postMessage</span><span class="params">(message,originTarget)</span></span></span><br><span class="line"><span class="comment">//originTarget目标窗口(协议+主机+端口号)，可写*表示所有窗口，或者b.com+(url可省略，写了也无效)</span></span><br></pre></td></tr></table></figure></p>
+<p>b.com/index.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//e.origin为消息来源，如http://a.com</span></span><br><span class="line">    <span class="comment">//e.data为传递的消息</span></span><br><span class="line">    <span class="comment">//e.source发送消息的窗口对象</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>4.websocket(全双工，双向通信)</strong><br>同源策略对websocket协议不适用</p>
+<p><a href="http://www.jb51.net/Special/894.htm" target="_blank" rel="external">脚本之家一些ajax跨域的汇总</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-谈谈自家的许愿墙" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -1594,135 +1664,6 @@ sudo ln -s /usr/lib/i386-linux-gnu/libtiff<span class="class">.so</span>.<span c
 </code></pre><p>同样留意i386，如果有类似的出现，查找相关命令下载即可<br>当执行<code>./iNodeClient</code>出现客户端界面就基本上完成安装啦</p>
 <p>看到客户端的界面，选择左上角的新建添加链接<br><img src="http://img1.ph.126.net/GZknSWgmRimiJ3kge7FBaA==/647955396405058911.jpg" alt="界面"><br>输入用户名和密码，按照下图点击选项，确定保存<br><img src="http://img3.ph.126.net/ZT9_EE9UGU5fLlqLSkzCvQ==/993325192829036033.jpg" alt="创建连接"><br>新的链接已经建立好了，选中链接，点击上方的“连接”按钮开始连接<br><img src="http://img4.ph.126.net/SAP09r3GcPMaNdDDFMyvMg==/2710041075787328544.jpg" alt="连接"><br>看到“You have passed the identity authentication”的字样时就表示认证成功，就可以上网啦！</p>
 
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Node模块机制" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/05/20/Node模块机制/" class="article-date">
-  	<time datetime="2016-05-20T09:11:19.000Z" itemprop="datePublished">2016-05-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/05/20/Node模块机制/">Node模块机制</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <pre><code><span class="keyword">js</span>规范缺陷：
-      没有模块系统；
-      标准库较少；
-      没有标准接口；
-      缺乏包管理系统。
-</code></pre><p>CommonJS规范提出弥补当前javascript没有标准的缺陷。</p>
-<p>CommonJS模块引用：require()</p>
-<p>上下文提供了exports对象用于导出当前模块的方法或变量：</p>
-<pre><code><span class="comment">//main.js</span>
-exports.add = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
-
-}
-<span class="comment">//program.js</span>
-<span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);
-exports.increment = <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>{
-    <span class="keyword">return</span> math.add(val,<span class="number">1</span>);
-}
-</code></pre><p>错误：</p>
-<pre><code><span class="keyword">exports</span> = <span class="function"><span class="keyword">function</span><span class="params">()</span><span class="comment">{
-    ...
-}</span>;</span>
-</code></pre><p>exports对象是通过形参方式传入，直接赋值会改变形参的引用，但不能改变作用域外的值</p>
-<pre><code>var change = <span class="function"><span class="keyword">function</span><span class="params">(a)</span> {</span>
-    a = <span class="number">100</span>;
-    console.<span class="built_in">log</span><span class="params">(a)</span>; <span class="comment">//100</span>
-};
-var a = <span class="number">10</span>;
-change<span class="params">(a)</span>;
-console.<span class="built_in">log</span><span class="params">(a)</span>; <span class="comment">//10</span>
-</code></pre><p>如果要达到require引入一个类的效果，赋值给module.exports对象，这个迂回的方案不改变形参的作用。</p>
-<p>node模块分为node提供的核心模块跟用户编写的文件模块。<br>核心模块在node源代码编译时已编译，node启动时即加入内存，省去文件定位和编译执行步骤，在路径分析中优先判断，故加载速度最快。<br>文件模块运行时动态加载，需完整路径分析、文件定位、编译执行过程，速度比较慢。</p>
-<p>不论核心模块还是文件模块，对相同模块二次加载一律缓存优先，这是第一优先级的，不同之处在与核心模块的缓存检查优先于文件模块的。</p>
-<p>不可以加载一个与核心模块标识符相同的自定义模块。</p>
-<p>模块路径是node在定位文件模块的具体文件时制定的查找策略，其类似于javascript的原型链或者作用域链，先在当前文件目录下的node_modules目录查找，然后沿路径向上逐级递归，这是自定义模块加载速度是最慢的原因。</p>
-<p>require()在分析标识符的过程中，会出现标识符中不包含文件扩展名的情况，这时按照.js,.json,.node次序查找。</p>
-<p>.js文件：通过fs模块同步读取文件后编译执行；<br>.node文件：是c/c++编写的扩展文件，通过dlopen()方法加载最后编译生成的文件；<br>.json文件：通过fs模块同步读取文件后，用JSON.parse()解析返回结果；<br>其余扩展名文件：当作js文件载入。</p>
-<p>编译过程中，node会对js文件内容进行包装：</p>
-<pre><code>(<span class="function"><span class="keyword">function</span>(<span class="params">exports,requiere,module,_filename,_dirname</span>)</span>{
-    <span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);
-    exports.area = <span class="function"><span class="keyword">function</span>(<span class="params">radius</span>) </span>{
-        <span class="keyword">return</span> <span class="built_in">Math</span>.PI*radius*radius;
-     };
-});
-</code></pre><p>这样每个模块文件之间进行作用域隔离，不污染全局变量。</p>
-<h2 id="包与npm"><strong>包与npm</strong></h2><p>在一个具体的包目录下执行npm test时，会运行test指向的脚本。<br>npm init 生成package.json文件<br>npm adduser 注册账号，npm必须要使用仓库账号才能将包发布到仓库中<br>npm publish . 上传包<br>npm owner 管理包的所有者（npm owner ls/npm owner add/npm owner rm）<br>npm ls 这个命令可以分析当前路径下可以通过模块路径找到的所有包</p>
-<p>包质量和安全问题：<br>口碑效应，在npm模块首页依赖榜可以说明模块的质量和可靠性；<br>GitHub中模块项目的观察者数量和分支数量也能侧面反应其可靠性和流行度；<br>包的测试用例，没有单元测试和文档的包基本上是无法被信任的。</p>
-<p>AMD规范：</p>
-<pre><code>define([<span class="string">'dep1'</span>,<span class="string">'dep2'</span>],<span class="function"><span class="keyword">function</span><span class="params">(dep1,dep2)</span></span>{
-    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span></span>{};
-});
-</code></pre><p>需要在声明时指定所有依赖<br>CMD规范：</p>
-<pre><code>define(<span class="function"><span class="keyword">function</span><span class="params">(<span class="keyword">require</span>,exports,<span class="keyword">module</span>)</span><span class="comment">{
-    //...
-}</span>);</span>
-</code></pre><p>require,exports,module通过形参传递给模块，在需要依赖模块时，随时调用require()引用</p>
-<p>兼容多种模块规范<br>将hello()方法定义到不同环境，兼容node，AMD，CMD及常见浏览器环境：</p>
-<pre><code>;(<span class="function"><span class="keyword">function</span>(<span class="params">name,definition</span>)</span>{
-    <span class="comment">//检测上下文环境是否为AMD或CMD</span>
-    <span class="keyword">var</span> hasDefine = <span class="keyword">typeof</span> define === <span class="string">'function'</span>,
-    <span class="comment">//检测上下文环境是否为node</span>
-    hasExports = <span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports;
-    <span class="keyword">if</span>(hasDefine){
-          <span class="comment">//AMD环境或CMD环境</span>
-          define(definition);
-     }<span class="keyword">else</span> <span class="keyword">if</span>(hasExports){
-          <span class="comment">//定义为普通node模块</span>
-          <span class="built_in">module</span>.exports = definition();
-     }<span class="keyword">else</span> {
-          <span class="comment">//将模块执行结果挂在window变量中</span>
-          <span class="keyword">this</span>[name] = definition();
-     }
-})(<span class="string">'hello'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
-    <span class="keyword">var</span> hello = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{};
-    <span class="keyword">return</span> hello;
-});
-</code></pre>
       
     </div>
     
