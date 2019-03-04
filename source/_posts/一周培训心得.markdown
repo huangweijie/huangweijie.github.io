@@ -1,0 +1,130 @@
+title: 一周培训心得
+date: 2015-07-30 19:41:31
+tags: 经验 
+---
+## Git
+使用git可以通过在终端输入git查的一些常用的命令，以下是一些git命令作为记录，方便查看使用：
+git reset 回退版本
+git reset --hard HEAD^中上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100
+git log 查看，git log -- pretty=oneline简洁查看
+git diff HEAD -- readme.txt命令可以查看工作区和版本库里面最新版本的区别
+git checkout -- file 可以丢弃工作区的修改（file为所丢弃修改文档名）
+用rm命令删除工作区的file。   如rm test.txt
+用命令git rm删掉版本库里的file。 如git rm test.txt
+使用命令git remote add origin git@server-name:path/repo-name.git可以关联一个远程库
+关联后，使用命令git push -u origin master第一次推送master分支的所有内容；
+此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改;
+git clone git@github.com:michaelliao/gitskills.git可以克隆一个本地库
+git checkout -b dev创建dev分支，加上-b参数表示创建并切换，相当于
+git branch dev
+git checkout dev
+git merge命令用于合并指定分支到当前分支
+git branch -d dev删除dev分支
+git log --graph命令可以看到分支合并图
+git log --graph --pretty=oneline --abbrev-commit查看分支合并情况
+当写程序过程中需要离开当前写的程序，git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作
+git stash list命令查看工作现场
+需要恢复有两个办法：
+1.用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；
+2.用git stash pop，恢复的同时把stash内容也删了
+可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：git stash apply stash@{0}
+用git remote查看远程仓库的信息
+用git remote -v可以显示更详细的信息
+推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：git push origin master。如果要推送其他分支，比如dev，就改成:git push origin dev
+创建远程origin的dev分支到本地，于是用这个命令创建本地dev分支:git checkout -b dev origin/dev
+如果推送失败，可能是因为小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送
+如果git pull也失败了，原因是没有指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：$ git branch --set-upstream dev origin/dev
+
+
+----------
+## HTML & CSS
+### 1.样式分离
+Html代码与Css代码分离，通过样式分离可以方便我们修改，当我们修改了HTML文件后，我们可以不用重新修改CSS文件来适应新的HTML文件。
+### 2.CSS优先级
+优先级逐级增加的选择器列表:
+    通用选择器
+    元素(类型)选择器
+    类选择器
+    属性选择器
+    伪类
+    ID 选择器
+    内联样式
+### 3.CSS 代码书写规范
+书写顺序：
+1.位置属性(position, top, right, z-index, display, float等)
+2.大小(width, height, padding, margin)
+3.文字系列(font, line-height, letter-spacing, color- text-align等)
+4.背景(background, border等)
+5.其他(animation, transition等)
+
+使用CSS缩写，减少代码量：
+1.CSS有些属性是可以缩写的，比如padding,margin,font等等，这样精简代码同时又能提高用户的阅读体验。
+2.去掉小数点前的0 如font-size:0.8em改成font-size:.8em
+
+简写命名：navigation --> nav
+
+16进制颜色代码缩写:#eebbcc --> #ebc
+
+连字符CSS选择器命名规范:
+1.长名称或词组可以使用中横线来为选择器命名。
+2.不能用“_”下划线来命名CSS选择器，为什么呢？
+    一些浏览器已经不允许使用下划线来命名CSS选择器（就是不兼容）；
+    能良好区分JavaScript变量命名.
+    
+不要随意使用id:
+id在JS是唯一的，不能多次使用，而使用class类选择器却可以重复使用，另外id的优先级优先与class，所以id应该按需使用，而不能滥用。    
+
+为选择器添加状态前缀:
+如.withdrawal --> .iswithdrawal
+
+常用CSS命名规则：
+头：header
+内容：content/container
+尾：footer
+导航：nav
+侧栏：sidebar
+栏目：column
+页面外围控制整体佈局宽度：wrapper
+左右中：left right center
+登录条：loginbar
+标志：logo
+广告：banner
+页面主体：main
+热点：hot
+新闻：news
+下载：download
+子导航：subnav
+菜单：menu
+子菜单：submenu
+搜索：search
+友情链接：friendlink
+页脚：footer
+版权：copyright
+滚动：scroll
+内容：content
+标签：tags
+文章列表：list
+提示信息：msg
+小技巧：tips
+栏目标题：title
+加入：joinus
+指南：guild
+服务：service
+注册：regsiter
+状态：status
+投票：vote
+合作伙伴：partner
+
+## JAVASCRIPT
+Javascript是一门单线程的语言。若是按照代码顺序执行，假如有的代码执行消耗的时间长，那么后面的代码得等待它们执行完才能执行，这就造成了效率低下。
+Javascript的执行机制为了解决它的单线程问题，类似于创建了其他的线程执行代码，当检测到需要耗费时间去执行的代码时，会将这部分代码拉出来单独执行，而主线程继续执行后面的代码，等到主线程执行完后再将拉出去的代码，按照队列一个一个回到主线程执行，这样可以增大运行的效率。
+
+## HTML5 & CSS3
+### HTML5
+HTML5可以实现网页中所需的音频、视频和拖放。
+可查看 http://www.w3school.com.cn/html5/ 学习
+
+### CSS3
+CSS3引入了Transition，使的原先瞬间变化的东西变得有一个过渡的过程，也就是有了动画的效果，让人看起来更舒服。
+CSS3可以编写较多的动画效果，自己编写动画执行时间，是美化网页的好工具。
+可查看 http://www.w3school.com.cn/css3/index.asp 学习
