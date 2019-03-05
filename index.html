@@ -190,6 +190,362 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-前端跨域" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/前端跨域/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/前端跨域/">前端跨域</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这里所谓的跨域问题，其实就是javascript为了在不同的域之间进行数据通信，由于浏览器具有同源策略，对于不同域(协议，域名，端口不同)之间的数据通信有一定的安全限制。</p>
+<h2 id="解决跨域问题："><a href="#解决跨域问题：" class="headerlink" title="解决跨域问题："></a>解决跨域问题：</h2><p><strong>1.服务端加上响应头</strong><br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">header(<span class="string">"Access-Control-Allow-Origin: *"</span>)<span class="comment">;</span></span><br><span class="line">header(<span class="string">"Access-COntrol-Allow-Methods: GET,POST"</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>2.jsonP(json with padding)</strong><br>jsonP跨域主要利用script src引入的js文件是没有受到同源策略的限制的<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"http://domain2.com/getjson?jsonp=parseResponse"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>jQuery中的实现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type: <span class="string">'GET'</span>,</span><br><span class="line">    url: <span class="string">'...'</span>,</span><br><span class="line">    dataType: <span class="string">'jsonp'</span>,</span><br><span class="line">    jsonpCallback: <span class="string">'cb'</span>, <span class="comment">//回调函数名</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">mes</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$.getJSON(url(<span class="string">"...&amp;jsoncallback=?"</span>),data,<span class="function"><span class="keyword">function</span>(<span class="params">mes</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//后台将？随机成一个方法名，进行返回</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>3.中间代理</strong><br>网上看到最多的中间代理就是iframe了，但是它的兼容性还是需要考虑的（在iphone上体验过iframe标签无效）</p>
+<h3 id="document-domain"><a href="#document-domain" class="headerlink" title="document.domain"></a>document.domain</h3><p> <a href="http://www.a.com/a.html" target="_blank" rel="noopener">www.a.com/a.html</a>:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.com'</span>;</span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>); <span class="comment">//创建交互iframe</span></span><br><span class="line">ifr.src = <span class="string">'http://www.script.a.com/b.html'</span>;</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line">ifr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> doc = ifr.contentDocument || ifr.contentWIndow.document; <span class="comment">//获取交互iframe的document进行操作</span></span><br><span class="line">    ifr.onload = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><a href="http://www.script.a.com/b.html" target="_blank" rel="noopener">www.script.a.com/b.html</a>:<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.html'</span>; <span class="comment">//相同主域</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="location-hash"><a href="#location-hash" class="headerlink" title="location.hash"></a>location.hash</h3><p>a.com/a.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建交互iframe</span></span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">ifr.src = <span class="string">'http://b.com/b.html#hash'</span>; <span class="comment">//交互iframe地址，可带hash传入</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line"></span><br><span class="line"><span class="comment">//轮询自身hash是否改变，以便获取响应</span></span><br><span class="line">setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = location.hash ? location.hash.substring(<span class="number">1</span>) : <span class="string">''</span>; <span class="comment">//获取hash，substring(1)去#</span></span><br><span class="line">&#125;,<span class="number">2000</span>)</span><br></pre></td></tr></table></figure></p>
+<p>b.com/b.html<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = location.hash;   <span class="comment">//获取传入的数据(带#)</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    parent.location.hash = <span class="string">'...'</span> <span class="comment">//给父窗口响应数据</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// ie，chrome具有安全机制不同域无法修改parent的hash值</span></span><br><span class="line">    <span class="comment">//创建中间iframe代理，域在a.com下</span></span><br><span class="line">    <span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">    ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">    ifr.src = <span class="string">'http://a.com/c.html#hash'</span>; <span class="comment">//将响应返回数据写入代理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>a.com/c.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parent<span class="selector-class">.parent</span><span class="selector-class">.loaction</span><span class="selector-class">.hash</span> = location<span class="selector-class">.hash</span><span class="selector-class">.substring</span>(<span class="number">1</span>) <span class="comment">//修改最上层窗口hash，将返回数据写入</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="window-name"><a href="#window-name" class="headerlink" title="window.name"></a>window.name</h3><p>a.com/a.html:<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> <span class="built_in">ifr</span> = document.createElement('iframe');</span><br><span class="line"><span class="built_in">ifr</span>.src = 'http://b.com/b.html';</span><br><span class="line"><span class="built_in">ifr</span>.<span class="built_in">style</span>.<span class="built_in">display</span> = 'none';</span><br><span class="line">document.body.appendChild(<span class="built_in">ifr</span>);</span><br><span class="line">//触发或轮询获取<span class="built_in">ifr</span>.contentWindow.name</span><br></pre></td></tr></table></figure></p>
+<p>b.com/b.html:<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.name = <span class="string">'data'</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="H5-postMessage"><a href="#H5-postMessage" class="headerlink" title="H5 postMessage()"></a>H5 postMessage()</h3><p>a.com/index.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&lt;iframe src="b.com/index.html"&gt;&lt;/iframe&gt;</span></span><br><span class="line"><span class="selector-tag">var</span> ifr = window<span class="selector-class">.frame</span>[<span class="number">0</span>].postMessage(message,originTarget)</span><br><span class="line"><span class="comment">//originTarget目标窗口(协议+主机+端口号)，可写*表示所有窗口，或者b.com+(url可省略，写了也无效)</span></span><br></pre></td></tr></table></figure></p>
+<p>b.com/index.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//e.origin为消息来源，如http://a.com</span></span><br><span class="line">    <span class="comment">//e.data为传递的消息</span></span><br><span class="line">    <span class="comment">//e.source发送消息的窗口对象</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>4.websocket(全双工，双向通信)</strong><br>同源策略对websocket协议不适用</p>
+<p><a href="http://www.jb51.net/Special/894.htm" target="_blank" rel="noopener">脚本之家一些ajax跨域的汇总</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-谈谈自家的许愿墙" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/谈谈自家的许愿墙/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/谈谈自家的许愿墙/">谈谈自家的许愿墙</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>有个词语挺有意思的，叫老生常谈，顾名思议，老书生经常谈（虽然原意为老书生经常说的话），看来我也要成为老书生了，竟是谈~来回归正题，我们来谈谈自家的许愿墙。</p>
+</blockquote>
+<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>广工大学城校区是典型的阳盛阴衰的，每年的女生节在广工算是一个比较隆重的节目了吧，为了让女生享受到更加便利的关注，为了让更多的男生女生们参与进大学丰富多彩的活动中，许愿墙就诞生了，并传承至今。</p>
+<h2 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h2><p>1.许愿墙在去年是开发成为微信的web app，相比往年增加了游戏这个新功能（虽然反响并不是特别好(┬＿┬)）。<br>2.我们团队先从项目需求入手进行分析，广工的背景让这个项目的生命周期在每年可以持续一周左右，除了提供基本的女生许愿男生领取愿望功能外，我们还希望加入一些新的元素吸引更多的人关注，类似接金币游戏就此诞生，画面展现出了男女生们的青春活力。<br>3.另外在这里不得不提提我们的暗恋匹配功能啦，大家写下心目中的他（她），若双方互相暗恋，就能告知对方，成就了数对小情侣们，成功牵线是我们的骄傲，是我们的自豪o(∩_∩)o。<br>4.考虑到保护女生们的信息安全问题，我们采取微信授权认证，只有男生领取了女生的愿望，才能获取女生相关信息，让他们能够进行交流而实现愿望。<br>5.项目在前端采用react+mobx+es6，引用gulp-webpack构建打包，后台使用nodejs+express构建，并使用mongo数据库存储相关信息数据（别想偷信息哈）。</p>
+<h2 id="技术介绍"><a href="#技术介绍" class="headerlink" title="技术介绍"></a>技术介绍</h2><h3 id="前端"><a href="#前端" class="headerlink" title="前端"></a><strong>前端</strong></h3><p><strong>React：</strong><br>要问到前端方面为什么选用react呢，而不用轻量级vue和boss级angular呢，挑选技术栈时它们确实一直在向我们招手，都想要朕重用它们😄，vue虽然用的特别的舒服，style+template+javascript组成一个vue文件，每一个都那么的清晰，用的那么舒服，可是在前面做过几个项目都用的vue，这次我们想多接触下别的框架，扩宽知识广度，而angular相对比较适合大型应用，使用脏检测的方式跟踪更新数据，在不熟悉的情况下使用会有比较多的坑，因此我们还是选择了也比较热门的react进行开发。<br>react的virtual DOM（虚拟DOM）使得项目可以不用直接操作DOM，而是通过虚拟的DOM进行操作，然后经过改进的diff算法计算后，通过render函数进行更新，大大提高了项目的性能。<br>来来来，我们来了解了解react的virtual DOM是怎么回事，virtual DOM把原生的DOM进行了抽象，在生成页面的时候会同时产生原生DOM的副本，我们在js的操作是先对副本进行操作，然后使用diff算法对比，对发生变化的部分进行自动更新（也可以人为控制生命周期）而不用全部重新渲染。<br>传统的DOM diff算法是通过遍历节点实现的，算法复杂度达到了O(n^3)，指数型的算法复杂度在节点数多的时候效率是特别的低的，而react通过3个策略改进了diff算法，使其复杂度仅为O(n)，大大提高了计算速度。<br><strong>React diff策略：</strong></p>
+<ol>
+<li>在web UI中DOM节点的跨层级操作是特别少的，基本可以忽略不计。</li>
+<li>相同组件有相似的结构，不同组件有不同的结构。</li>
+<li>对同一层次的节点可以通过唯一的id进行区分。</li>
+</ol>
+<p><strong>第一点(tree diff)</strong><br>由于跨层级操作少，可以只对两棵树进行同层对比，当发现某一层次节点不存在或者新增了，则新增该节点或者删除该节点及其子节点（不会再对子节点进行比较）。<br>但是当出现跨层级的移动操作，React diff就会对已经不存在节点直接删除，而对新存在的节点进行新增，而不是直接通过移动实现，这样就会影响性能，所以还是需要尽量避免进行跨层级的操作。</p>
+<p><strong>第二点(component diff)</strong><br>React diff在发现相同的组件时就会进行tree diff比较，而不同的组件则直接删除更换，不会再进行进一步的比较，这又通过节省diff计算大大提高了计算速度，当然用户可以通过shouldComponentUpdate()返回true还是false来自己决定是否对该组件及其子组件进行更新。</p>
+<p><strong>第三点（element diff）</strong><br>React diff在同层次发现不同节点直接就删除替换了，那么有没可能只是顺序的不同，而只是调换一下顺序呢，当然有~<br>所以通过给节点标上唯一的id，那么节点就能通过对比新老集合的位置，只进行移动，而不需要进行删除及创建插入，这样就能更高效的进行更新了。</p>
+<p>以上只是个人看了相关内容后的理解总结，有什么不对的可以评论改进喔~<br>在此留下收藏的资料供大家看：<br><a href="https://zhuanlan.zhihu.com/p/20346379?columnSlug=purerender" target="_blank" rel="noopener">React源码解析+diff算法</a><br><a href="https://supnate.github.io/react-dom-diff/index.html" target="_blank" rel="noopener">github自己体会下diff算法（打开控制台观看）</a></p>
+<p><strong>mobx：</strong><br>对于mobx的了解倒还不是特别的深，稍微了解了下mobx和redux的区别，redux是有action，store和view三层，通过reducer修改数据后经过双向数据绑定达到更新试图的目的，但是redux会出现多订阅，粗粒度的缺点，比如：<br>if(c) {<br>    return a;<br>}<br>return b;<br>这时候会对a,b,c都进行监听，然而在c为true的时候，b就没有进行使用了；<br>粗粒度则是在只对arr[0].name进行了修改引用，而监听是针对的arr的；<br>由于许愿墙只需要进行store到view层的操作对使用的用户数据进行存储，因此采用mobx相对比较小，学习使用成本也相对比较低，通过es6的修饰器引入mobx的observable接口，在所有页面共享该用户的数据，减少各个页面对用户数据的传递导致组件的更新或者因此而导致的增加http请求。</p>
+<p><strong>gulp-webpack:</strong><br>使用gulp进行本地的调试开发，自动更新页面大大提高了开发的效率，通过webpack引入css-loader、style-loader、url-loader分别对css的url进行支持，对css进行支持，对图片url进行支持，还引入postcss-loader（autoprefixer插件）自动增加css前缀适配多端，另外当然是引入babel-preset-es2015,babel-preset-react和babel-preset-stage-num(0~3)对es6进行解析。</p>
+<h3 id="后台"><a href="#后台" class="headerlink" title="后台"></a><strong>后台</strong></h3><p>后台使用nodejs+express框架开启服务器，通过express监听各个请求，设置路由专门处理相应的请求，另外在对数据库的操作再另外设置一个代理，路由中通过代理对数据库进行操作后作出请求的相应。<br>后台还需要通过引入bodyparser，cookieparser来对body json数据以及cookie进行解析使用。</p>
+<h2 id="问题汇总"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总</h2><p>1.首先感受最深刻的就是游戏性能问题的，由于首次接触canvas的游戏开发，对性能的研究基本没有，在掉落“金币”时的掉落动画会有些许卡顿，体验极其不友好。<br><strong>改进：</strong>通过相关研究，在掉落“金币”时，对其对象进行重复利用，通过循环产生的“金币”，在经过下降后由于“金币”会消失在视图中，通过设置一定数量上限让“金币”达到上限时再重新从0开始赋予“金币”属性。</p>
+<pre><code>function chansheng() {
+    if (shi % h == 0) {
+        for (var j = 2 * chi; j &lt; 2 * (chi + 1); j++) {
+            tu[j] = new object();
+            ...
+            var range = canvasW - w * B;
+            var i = Math.round(Math.random() * range);
+            if (j == 2 * chi + 1) {
+                while (Math.abs(i - tu[2 * chi].x) &lt; w * B) {
+                    i = Math.round(Math.random() * range);
+                }
+            }
+            tu[j].x = i;
+            tu[j].y = -Math.round(Math.random() * 100);
+        }
+        chi++;
+        if (chi == 50) chi = 0;  //重置数量
+    }
+    shi++;
+}
+</code></pre><p>2.在性能的优化方面还有就是可以通过缓存图像进行提高性能。<br><strong>改进：</strong></p>
+<pre><code>var cacheCanvas = [],
+    cacheCtx = [],
+    down = [];
+for (var i = 0; i &lt;= 4; i++) {
+    down[i] = new Image();
+}
+down[0].src = &apos;images/down/boy.png&apos;;
+down[1].src = &apos;images/down/+1s.png&apos;;
+down[2].src = &apos;images/down/+10KG.png&apos;;
+down[3].src = &apos;images/down/special.png&apos;;
+down[4].src = &apos;images/down/love.png&apos;;
+for (var i = 0; i &lt;= 4; i++) {
+    down[i].onload = function() {
+        for (var i = 0; i &lt;= 4; i++) {
+            cacheCanvas[i] = document.createElement(&apos;canvas&apos;);  //创建多个canvas元素把图片预先缓存，需要时再取出
+            cacheCtx[i] = cacheCanvas[i].getContext(&apos;2d&apos;);
+            cacheCanvas[i].width = down[i].width * B;
+            cacheCanvas[i].height = down[i].height * B;
+            cacheCtx[i].drawImage(down[i], 0, 0, down[i].width * B, down[i].height * B)
+        }
+    }
+}
+</code></pre><p>3.游戏在ios和安卓的适配方面出现了两个问题，一是在ios上iframe标签无法正常工作，二是ios9+的重力感应deviceorientation事件触发频率不同。<br><strong>改进：</strong> iframe标签无法工作后统一使用外链的形式，由于男女进入的游戏是不同版本的，在react的jsx中先判断用户性别，后使用跳转的方式进入游戏。由于触发频率的不同，导致ios9+与其他用户的移动速度不同，ios9+会比较快，造成不公平现象，于是采用加入时间验证的方式使游戏相对公平。</p>
+<pre><code>var timeControl = new Date();  //记录一次触发时间
+window.addEventListener(&quot;deviceorientation&quot;, function(event) {
+    if (new Date() - timeControl &gt;= 30) {   //时间相隔大于等于30ms再触发
+        var move = event.gamma;
+        if (move &lt; 0) {
+            sprite.x = sprite.x - moveSpeed;
+        } else if (move &gt; 0) {
+            sprite.x = sprite.x + moveSpeed;
+        }
+        if (sprite.x + playerWidth &gt;= canvasW) sprite.x = canvasW - playerWidth;
+        else if (sprite.x &lt;= 0) sprite.x = 0;
+        timeControl = new Date(); //触发结束重置时间
+    }
+}, true);
+</code></pre><p>4.react的路由跳转问题，直接引用this.context.router.push(path)出错。<br><strong>改进：</strong> 在react组件中需加入contextType对象。</p>
+<pre><code>ComponentName.contextTypes = {
+    router: React.propTypes.object.isRequired
+} //组件外加入的所以加上组件名字
+</code></pre>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
+<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
+<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
+<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
+<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
+<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
+<p>4.routerjs</p>
+<pre><code>&quot;/receive&quot;: {
+    component: receive
+},
+&quot;/receiveList/:userId&quot;: {
+    name: &apos;userList&apos;,
+    component: receiveList
+},
+&quot;/blessingDetail/:wishId/:state&quot;: {
+    name: &apos;blessingDetail&apos;,
+    component: blessingDetail
+},
+
+/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
+</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
+<p>6.cookie设置记录登录状态</p>
+<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
+    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
+    var cookieDate = new Date();
+    cookieDate.setDate(cookieDate.getDate() + expires);
+    // if(expires instanceof Date) {
+    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
+    // }
+    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
+    if(path) {
+        cookieText += &quot;; path=&quot; + path;
+    }
+    if(domain) {
+        cookieText += &quot;; domain=&quot; + domain;
+    }
+    if(secure){
+        cookieText += &quot;; secure&quot;;
+    }
+    document.cookie = cookieText;
+};
+
+     setCookie(&quot;phone&quot;, me.telephone, 30);
+
+    var getCookie = function(name){
+        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
+        var cookieStart = document.cookie.indexOf(cookieName);
+        var cookieValue = null;
+        if(cookieStart &gt; -1) {
+            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
+            if(cookieEnd == -1) {
+                cookieEnd = document.cookie.length;
+            }
+            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
+        }
+        // console.log(cookieValue);
+        // this.telephone = &apos;123&apos;;
+        return cookieValue;
+    };
+
+    if(getCookie(&quot;phone&quot;) !== null){
+        this.$route.router.go({
+            name: &quot;userList&quot;,
+            params: {
+                userId : getCookie(&quot;phone&quot;)
+            },
+        });
+    }
+</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
+<pre><code>var time = 60;
+var timer;
+timer = setInterval(function(){
+    if(time &gt; 0){
+        this.retimer = true;
+        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
+        event.target.disabled = true;
+    } else {
+        this.retimer = false;
+        window.clearInterval(timer);
+        event.target.innerHTML = &quot;获取验证码&quot;;
+        event.target.disabled = false;
+    }
+}, 1000);
+</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
+<p>9.</p>
+<blockquote>
+<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
+<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
+<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
+<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>后还需要另外加入</p>
+<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
+<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-异步编程" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
@@ -436,10 +792,10 @@ fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
 
 
   
-    <article id="post-谈谈自家的许愿墙" class="article article-type-post" itemscope="" itemprop="blogPost">
+    <article id="post-异步I-O" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/05/07/谈谈自家的许愿墙/" class="article-date">
+      <a href="/2017/05/07/异步I-O/" class="article-date">
   	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
 </a>
     </div>
@@ -453,7 +809,7 @@ fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/谈谈自家的许愿墙/">谈谈自家的许愿墙</a>
+      <a class="article-title" href="/2017/05/07/异步I-O/">异步I/O</a>
     </h1>
   
 
@@ -462,88 +818,20 @@ fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>有个词语挺有意思的，叫老生常谈，顾名思议，老书生经常谈（虽然原意为老书生经常说的话），看来我也要成为老书生了，竟是谈~来回归正题，我们来谈谈自家的许愿墙。</p>
-</blockquote>
-<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>广工大学城校区是典型的阳盛阴衰的，每年的女生节在广工算是一个比较隆重的节目了吧，为了让女生享受到更加便利的关注，为了让更多的男生女生们参与进大学丰富多彩的活动中，许愿墙就诞生了，并传承至今。</p>
-<h2 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h2><p>1.许愿墙在去年是开发成为微信的web app，相比往年增加了游戏这个新功能（虽然反响并不是特别好(┬＿┬)）。<br>2.我们团队先从项目需求入手进行分析，广工的背景让这个项目的生命周期在每年可以持续一周左右，除了提供基本的女生许愿男生领取愿望功能外，我们还希望加入一些新的元素吸引更多的人关注，类似接金币游戏就此诞生，画面展现出了男女生们的青春活力。<br>3.另外在这里不得不提提我们的暗恋匹配功能啦，大家写下心目中的他（她），若双方互相暗恋，就能告知对方，成就了数对小情侣们，成功牵线是我们的骄傲，是我们的自豪o(∩_∩)o。<br>4.考虑到保护女生们的信息安全问题，我们采取微信授权认证，只有男生领取了女生的愿望，才能获取女生相关信息，让他们能够进行交流而实现愿望。<br>5.项目在前端采用react+mobx+es6，引用gulp-webpack构建打包，后台使用nodejs+express构建，并使用mongo数据库存储相关信息数据（别想偷信息哈）。</p>
-<h2 id="技术介绍"><a href="#技术介绍" class="headerlink" title="技术介绍"></a>技术介绍</h2><h3 id="前端"><a href="#前端" class="headerlink" title="前端"></a><strong>前端</strong></h3><p><strong>React：</strong><br>要问到前端方面为什么选用react呢，而不用轻量级vue和boss级angular呢，挑选技术栈时它们确实一直在向我们招手，都想要朕重用它们😄，vue虽然用的特别的舒服，style+template+javascript组成一个vue文件，每一个都那么的清晰，用的那么舒服，可是在前面做过几个项目都用的vue，这次我们想多接触下别的框架，扩宽知识广度，而angular相对比较适合大型应用，使用脏检测的方式跟踪更新数据，在不熟悉的情况下使用会有比较多的坑，因此我们还是选择了也比较热门的react进行开发。<br>react的virtual DOM（虚拟DOM）使得项目可以不用直接操作DOM，而是通过虚拟的DOM进行操作，然后经过改进的diff算法计算后，通过render函数进行更新，大大提高了项目的性能。<br>来来来，我们来了解了解react的virtual DOM是怎么回事，virtual DOM把原生的DOM进行了抽象，在生成页面的时候会同时产生原生DOM的副本，我们在js的操作是先对副本进行操作，然后使用diff算法对比，对发生变化的部分进行自动更新（也可以人为控制生命周期）而不用全部重新渲染。<br>传统的DOM diff算法是通过遍历节点实现的，算法复杂度达到了O(n^3)，指数型的算法复杂度在节点数多的时候效率是特别的低的，而react通过3个策略改进了diff算法，使其复杂度仅为O(n)，大大提高了计算速度。<br><strong>React diff策略：</strong></p>
-<ol>
-<li>在web UI中DOM节点的跨层级操作是特别少的，基本可以忽略不计。</li>
-<li>相同组件有相似的结构，不同组件有不同的结构。</li>
-<li>对同一层次的节点可以通过唯一的id进行区分。</li>
-</ol>
-<p><strong>第一点(tree diff)</strong><br>由于跨层级操作少，可以只对两棵树进行同层对比，当发现某一层次节点不存在或者新增了，则新增该节点或者删除该节点及其子节点（不会再对子节点进行比较）。<br>但是当出现跨层级的移动操作，React diff就会对已经不存在节点直接删除，而对新存在的节点进行新增，而不是直接通过移动实现，这样就会影响性能，所以还是需要尽量避免进行跨层级的操作。</p>
-<p><strong>第二点(component diff)</strong><br>React diff在发现相同的组件时就会进行tree diff比较，而不同的组件则直接删除更换，不会再进行进一步的比较，这又通过节省diff计算大大提高了计算速度，当然用户可以通过shouldComponentUpdate()返回true还是false来自己决定是否对该组件及其子组件进行更新。</p>
-<p><strong>第三点（element diff）</strong><br>React diff在同层次发现不同节点直接就删除替换了，那么有没可能只是顺序的不同，而只是调换一下顺序呢，当然有~<br>所以通过给节点标上唯一的id，那么节点就能通过对比新老集合的位置，只进行移动，而不需要进行删除及创建插入，这样就能更高效的进行更新了。</p>
-<p>以上只是个人看了相关内容后的理解总结，有什么不对的可以评论改进喔~<br>在此留下收藏的资料供大家看：<br><a href="https://zhuanlan.zhihu.com/p/20346379?columnSlug=purerender" target="_blank" rel="noopener">React源码解析+diff算法</a><br><a href="https://supnate.github.io/react-dom-diff/index.html" target="_blank" rel="noopener">github自己体会下diff算法（打开控制台观看）</a></p>
-<p><strong>mobx：</strong><br>对于mobx的了解倒还不是特别的深，稍微了解了下mobx和redux的区别，redux是有action，store和view三层，通过reducer修改数据后经过双向数据绑定达到更新试图的目的，但是redux会出现多订阅，粗粒度的缺点，比如：<br>if(c) {<br>    return a;<br>}<br>return b;<br>这时候会对a,b,c都进行监听，然而在c为true的时候，b就没有进行使用了；<br>粗粒度则是在只对arr[0].name进行了修改引用，而监听是针对的arr的；<br>由于许愿墙只需要进行store到view层的操作对使用的用户数据进行存储，因此采用mobx相对比较小，学习使用成本也相对比较低，通过es6的修饰器引入mobx的observable接口，在所有页面共享该用户的数据，减少各个页面对用户数据的传递导致组件的更新或者因此而导致的增加http请求。</p>
-<p><strong>gulp-webpack:</strong><br>使用gulp进行本地的调试开发，自动更新页面大大提高了开发的效率，通过webpack引入css-loader、style-loader、url-loader分别对css的url进行支持，对css进行支持，对图片url进行支持，还引入postcss-loader（autoprefixer插件）自动增加css前缀适配多端，另外当然是引入babel-preset-es2015,babel-preset-react和babel-preset-stage-num(0~3)对es6进行解析。</p>
-<h3 id="后台"><a href="#后台" class="headerlink" title="后台"></a><strong>后台</strong></h3><p>后台使用nodejs+express框架开启服务器，通过express监听各个请求，设置路由专门处理相应的请求，另外在对数据库的操作再另外设置一个代理，路由中通过代理对数据库进行操作后作出请求的相应。<br>后台还需要通过引入bodyparser，cookieparser来对body json数据以及cookie进行解析使用。</p>
-<h2 id="问题汇总"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总</h2><p>1.首先感受最深刻的就是游戏性能问题的，由于首次接触canvas的游戏开发，对性能的研究基本没有，在掉落“金币”时的掉落动画会有些许卡顿，体验极其不友好。<br><strong>改进：</strong>通过相关研究，在掉落“金币”时，对其对象进行重复利用，通过循环产生的“金币”，在经过下降后由于“金币”会消失在视图中，通过设置一定数量上限让“金币”达到上限时再重新从0开始赋予“金币”属性。</p>
-<pre><code>function chansheng() {
-    if (shi % h == 0) {
-        for (var j = 2 * chi; j &lt; 2 * (chi + 1); j++) {
-            tu[j] = new object();
-            ...
-            var range = canvasW - w * B;
-            var i = Math.round(Math.random() * range);
-            if (j == 2 * chi + 1) {
-                while (Math.abs(i - tu[2 * chi].x) &lt; w * B) {
-                    i = Math.round(Math.random() * range);
-                }
-            }
-            tu[j].x = i;
-            tu[j].y = -Math.round(Math.random() * 100);
-        }
-        chi++;
-        if (chi == 50) chi = 0;  //重置数量
-    }
-    shi++;
-}
-</code></pre><p>2.在性能的优化方面还有就是可以通过缓存图像进行提高性能。<br><strong>改进：</strong></p>
-<pre><code>var cacheCanvas = [],
-    cacheCtx = [],
-    down = [];
-for (var i = 0; i &lt;= 4; i++) {
-    down[i] = new Image();
-}
-down[0].src = &apos;images/down/boy.png&apos;;
-down[1].src = &apos;images/down/+1s.png&apos;;
-down[2].src = &apos;images/down/+10KG.png&apos;;
-down[3].src = &apos;images/down/special.png&apos;;
-down[4].src = &apos;images/down/love.png&apos;;
-for (var i = 0; i &lt;= 4; i++) {
-    down[i].onload = function() {
-        for (var i = 0; i &lt;= 4; i++) {
-            cacheCanvas[i] = document.createElement(&apos;canvas&apos;);  //创建多个canvas元素把图片预先缓存，需要时再取出
-            cacheCtx[i] = cacheCanvas[i].getContext(&apos;2d&apos;);
-            cacheCanvas[i].width = down[i].width * B;
-            cacheCanvas[i].height = down[i].height * B;
-            cacheCtx[i].drawImage(down[i], 0, 0, down[i].width * B, down[i].height * B)
-        }
-    }
-}
-</code></pre><p>3.游戏在ios和安卓的适配方面出现了两个问题，一是在ios上iframe标签无法正常工作，二是ios9+的重力感应deviceorientation事件触发频率不同。<br><strong>改进：</strong> iframe标签无法工作后统一使用外链的形式，由于男女进入的游戏是不同版本的，在react的jsx中先判断用户性别，后使用跳转的方式进入游戏。由于触发频率的不同，导致ios9+与其他用户的移动速度不同，ios9+会比较快，造成不公平现象，于是采用加入时间验证的方式使游戏相对公平。</p>
-<pre><code>var timeControl = new Date();  //记录一次触发时间
-window.addEventListener(&quot;deviceorientation&quot;, function(event) {
-    if (new Date() - timeControl &gt;= 30) {   //时间相隔大于等于30ms再触发
-        var move = event.gamma;
-        if (move &lt; 0) {
-            sprite.x = sprite.x - moveSpeed;
-        } else if (move &gt; 0) {
-            sprite.x = sprite.x + moveSpeed;
-        }
-        if (sprite.x + playerWidth &gt;= canvasW) sprite.x = canvasW - playerWidth;
-        else if (sprite.x &lt;= 0) sprite.x = 0;
-        timeControl = new Date(); //触发结束重置时间
-    }
-}, true);
-</code></pre><p>4.react的路由跳转问题，直接引用this.context.router.push(path)出错。<br><strong>改进：</strong> 在react组件中需加入contextType对象。</p>
-<pre><code>ComponentName.contextTypes = {
-    router: React.propTypes.object.isRequired
-} //组件外加入的所以加上组件名字
-</code></pre>
+        <p><strong>异步I/O与非阻塞I/O</strong></p>
+<p>阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。<br>非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）</p>
+<p><strong>轮询技术</strong></p>
+<p>read：最原始，性能最低。通过重复调用检查I/O状态完成。在得到最终数据前，CPU一直耗在等待上。<br>select：改进成通过文件描述符上事件状态来判断。有一个较弱限制，通过一个1024长度数组来存储状态，最多可同时检查             1024个文件描述符。<br>poll：改进成通过链表存储，性能限制有所改善，跟select类似。<br>epoll：Linux下效率最高的I/O事件通知机制，在进入轮询时没有检查到I/O事件时进行休眠，直到事件发生唤醒。它真实利用了事件通知、执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率较高。<br>kqueue：该方案实现与epoll类似，不过它仅在FreeBSD系统下存在。</p>
+<p>轮询技术满足了非阻塞I/O确保获取完整数据的需求，但对于应用程序仍然算是同步，应用程序仍然需要等待I/O完全返回。</p>
+<p><strong>请求对象</strong></p>
+<p>从javascript发起调用到内核执行I/O操作的过渡过程中，存在一种中间产物，叫请求对象。<br>javascript调用-&gt;node核心模块-&gt;c++内建模块-&gt;通过libuv进行系统调用<br>libuv作为封装层，有两个平台的实现（win和unix），实际上调用了uv_fs_open()方法，在其调用过程中，创建了FSReqWrap对象，javascript层传入的参数和方法封装在这个请求对象中，回调函数则设置在这个对象的oncomplete_sym属性上。<br>请求对象是异步I/O过程的重要中间产物，所有状态都保存在这个对象，包括送入线程池等待执行及I/O操作完毕后的回调处理。</p>
+<p>小结<br>异步I/O：单线程、事件循环、观察者和I/O线程池。在Node中，javascript是单线程，node自身是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点是，除了用户代码无法并行执行外，所有I/O（磁盘I/O和网络I/O等）是可以并行起来的。</p>
+<p><strong>非I/O的异步API</strong></p>
+<p>立即异步执行：<br>setTimeout(function(){<br>    //<br>},0);<br>这种方法较浪费性能<br>process.nextTick(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行</p>
+<p>setImmediate(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行<br>process.nextTick()跟setImmediate()类似，但：<br>process.nextTick(function(){<br>    console.log(‘nextTick延迟执行’)；<br>})；<br>setImmediate(function(){<br>    console.log(‘setImmediate延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>nextTick延迟执行<br>setImmediate延迟执行<br>process.nextTick()中回调函数优先级高于setImmediate()。因为事件循环对观察者的检查有先后顺序，process.nextTick()属于idle观察者，setImmediate()属于check观察者。<br>每一轮循环检查中，idle观察者&gt;I/O观察者&gt;check观察者</p>
+<p>process.nextTick()的回调函数存在一个数组中，每轮循环全部执行完；<br>setImmediate()每轮只执行链表中的一个回调函数。</p>
+<p>事件驱动和高性能服务器<br>经典服务器模型：<br>同步式：一次处理一个请求，其余请求处于等待状态；<br>每进程/每请求：每个请求创建一个进程，可处理多个请求，但不具备扩展性，系统资源有限；<br>每线程/每请求：每个请求创建一个线程，可处理多个请求，线程比进程轻量，但每个线程也占内存，对于大型站点仍然不够。</p>
+
       
     </div>
     
@@ -860,294 +1148,6 @@ changePage(page) {
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-前端跨域" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/前端跨域/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/前端跨域/">前端跨域</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这里所谓的跨域问题，其实就是javascript为了在不同的域之间进行数据通信，由于浏览器具有同源策略，对于不同域(协议，域名，端口不同)之间的数据通信有一定的安全限制。</p>
-<h2 id="解决跨域问题："><a href="#解决跨域问题：" class="headerlink" title="解决跨域问题："></a>解决跨域问题：</h2><p><strong>1.服务端加上响应头</strong><br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">header(<span class="string">"Access-Control-Allow-Origin: *"</span>)<span class="comment">;</span></span><br><span class="line">header(<span class="string">"Access-COntrol-Allow-Methods: GET,POST"</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>2.jsonP(json with padding)</strong><br>jsonP跨域主要利用script src引入的js文件是没有受到同源策略的限制的<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"http://domain2.com/getjson?jsonp=parseResponse"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>jQuery中的实现：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type: <span class="string">'GET'</span>,</span><br><span class="line">    url: <span class="string">'...'</span>,</span><br><span class="line">    dataType: <span class="string">'jsonp'</span>,</span><br><span class="line">    jsonpCallback: <span class="string">'cb'</span>, <span class="comment">//回调函数名</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">mes</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">$.getJSON(url(<span class="string">"...&amp;jsoncallback=?"</span>),data,<span class="function"><span class="keyword">function</span>(<span class="params">mes</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//后台将？随机成一个方法名，进行返回</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>3.中间代理</strong><br>网上看到最多的中间代理就是iframe了，但是它的兼容性还是需要考虑的（在iphone上体验过iframe标签无效）</p>
-<h3 id="document-domain"><a href="#document-domain" class="headerlink" title="document.domain"></a>document.domain</h3><p> <a href="http://www.a.com/a.html" target="_blank" rel="noopener">www.a.com/a.html</a>:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.com'</span>;</span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>); <span class="comment">//创建交互iframe</span></span><br><span class="line">ifr.src = <span class="string">'http://www.script.a.com/b.html'</span>;</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line">ifr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> doc = ifr.contentDocument || ifr.contentWIndow.document; <span class="comment">//获取交互iframe的document进行操作</span></span><br><span class="line">    ifr.onload = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><a href="http://www.script.a.com/b.html" target="_blank" rel="noopener">www.script.a.com/b.html</a>:<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.domain = <span class="string">'a.html'</span>; <span class="comment">//相同主域</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="location-hash"><a href="#location-hash" class="headerlink" title="location.hash"></a>location.hash</h3><p>a.com/a.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建交互iframe</span></span><br><span class="line"><span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">ifr.src = <span class="string">'http://b.com/b.html#hash'</span>; <span class="comment">//交互iframe地址，可带hash传入</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(ifr);</span><br><span class="line"></span><br><span class="line"><span class="comment">//轮询自身hash是否改变，以便获取响应</span></span><br><span class="line">setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = location.hash ? location.hash.substring(<span class="number">1</span>) : <span class="string">''</span>; <span class="comment">//获取hash，substring(1)去#</span></span><br><span class="line">&#125;,<span class="number">2000</span>)</span><br></pre></td></tr></table></figure></p>
-<p>b.com/b.html<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = location.hash;   <span class="comment">//获取传入的数据(带#)</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    parent.location.hash = <span class="string">'...'</span> <span class="comment">//给父窗口响应数据</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// ie，chrome具有安全机制不同域无法修改parent的hash值</span></span><br><span class="line">    <span class="comment">//创建中间iframe代理，域在a.com下</span></span><br><span class="line">    <span class="keyword">var</span> ifr = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>);</span><br><span class="line">    ifr.style.display = <span class="string">'none'</span>;</span><br><span class="line">    ifr.src = <span class="string">'http://a.com/c.html#hash'</span>; <span class="comment">//将响应返回数据写入代理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>a.com/c.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parent<span class="selector-class">.parent</span><span class="selector-class">.loaction</span><span class="selector-class">.hash</span> = location<span class="selector-class">.hash</span><span class="selector-class">.substring</span>(<span class="number">1</span>) <span class="comment">//修改最上层窗口hash，将返回数据写入</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="window-name"><a href="#window-name" class="headerlink" title="window.name"></a>window.name</h3><p>a.com/a.html:<br><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> <span class="built_in">ifr</span> = document.createElement('iframe');</span><br><span class="line"><span class="built_in">ifr</span>.src = 'http://b.com/b.html';</span><br><span class="line"><span class="built_in">ifr</span>.<span class="built_in">style</span>.<span class="built_in">display</span> = 'none';</span><br><span class="line">document.body.appendChild(<span class="built_in">ifr</span>);</span><br><span class="line">//触发或轮询获取<span class="built_in">ifr</span>.contentWindow.name</span><br></pre></td></tr></table></figure></p>
-<p>b.com/b.html:<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.name = <span class="string">'data'</span>;</span><br></pre></td></tr></table></figure></p>
-<h3 id="H5-postMessage"><a href="#H5-postMessage" class="headerlink" title="H5 postMessage()"></a>H5 postMessage()</h3><p>a.com/index.html:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&lt;iframe src="b.com/index.html"&gt;&lt;/iframe&gt;</span></span><br><span class="line"><span class="selector-tag">var</span> ifr = window<span class="selector-class">.frame</span>[<span class="number">0</span>].postMessage(message,originTarget)</span><br><span class="line"><span class="comment">//originTarget目标窗口(协议+主机+端口号)，可写*表示所有窗口，或者b.com+(url可省略，写了也无效)</span></span><br></pre></td></tr></table></figure></p>
-<p>b.com/index.html:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//e.origin为消息来源，如http://a.com</span></span><br><span class="line">    <span class="comment">//e.data为传递的消息</span></span><br><span class="line">    <span class="comment">//e.source发送消息的窗口对象</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p><strong>4.websocket(全双工，双向通信)</strong><br>同源策略对websocket协议不适用</p>
-<p><a href="http://www.jb51.net/Special/894.htm" target="_blank" rel="noopener">脚本之家一些ajax跨域的汇总</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-异步I-O" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/异步I-O/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/异步I-O/">异步I/O</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>异步I/O与非阻塞I/O</strong></p>
-<p>阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。<br>非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）</p>
-<p><strong>轮询技术</strong></p>
-<p>read：最原始，性能最低。通过重复调用检查I/O状态完成。在得到最终数据前，CPU一直耗在等待上。<br>select：改进成通过文件描述符上事件状态来判断。有一个较弱限制，通过一个1024长度数组来存储状态，最多可同时检查             1024个文件描述符。<br>poll：改进成通过链表存储，性能限制有所改善，跟select类似。<br>epoll：Linux下效率最高的I/O事件通知机制，在进入轮询时没有检查到I/O事件时进行休眠，直到事件发生唤醒。它真实利用了事件通知、执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率较高。<br>kqueue：该方案实现与epoll类似，不过它仅在FreeBSD系统下存在。</p>
-<p>轮询技术满足了非阻塞I/O确保获取完整数据的需求，但对于应用程序仍然算是同步，应用程序仍然需要等待I/O完全返回。</p>
-<p><strong>请求对象</strong></p>
-<p>从javascript发起调用到内核执行I/O操作的过渡过程中，存在一种中间产物，叫请求对象。<br>javascript调用-&gt;node核心模块-&gt;c++内建模块-&gt;通过libuv进行系统调用<br>libuv作为封装层，有两个平台的实现（win和unix），实际上调用了uv_fs_open()方法，在其调用过程中，创建了FSReqWrap对象，javascript层传入的参数和方法封装在这个请求对象中，回调函数则设置在这个对象的oncomplete_sym属性上。<br>请求对象是异步I/O过程的重要中间产物，所有状态都保存在这个对象，包括送入线程池等待执行及I/O操作完毕后的回调处理。</p>
-<p>小结<br>异步I/O：单线程、事件循环、观察者和I/O线程池。在Node中，javascript是单线程，node自身是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点是，除了用户代码无法并行执行外，所有I/O（磁盘I/O和网络I/O等）是可以并行起来的。</p>
-<p><strong>非I/O的异步API</strong></p>
-<p>立即异步执行：<br>setTimeout(function(){<br>    //<br>},0);<br>这种方法较浪费性能<br>process.nextTick(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行</p>
-<p>setImmediate(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行<br>process.nextTick()跟setImmediate()类似，但：<br>process.nextTick(function(){<br>    console.log(‘nextTick延迟执行’)；<br>})；<br>setImmediate(function(){<br>    console.log(‘setImmediate延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>nextTick延迟执行<br>setImmediate延迟执行<br>process.nextTick()中回调函数优先级高于setImmediate()。因为事件循环对观察者的检查有先后顺序，process.nextTick()属于idle观察者，setImmediate()属于check观察者。<br>每一轮循环检查中，idle观察者&gt;I/O观察者&gt;check观察者</p>
-<p>process.nextTick()的回调函数存在一个数组中，每轮循环全部执行完；<br>setImmediate()每轮只执行链表中的一个回调函数。</p>
-<p>事件驱动和高性能服务器<br>经典服务器模型：<br>同步式：一次处理一个请求，其余请求处于等待状态；<br>每进程/每请求：每个请求创建一个进程，可处理多个请求，但不具备扩展性，系统资源有限；<br>每线程/每请求：每个请求创建一个线程，可处理多个请求，线程比进程轻量，但每个线程也占内存，对于大型站点仍然不够。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
-<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
-<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
-</blockquote>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
-<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
-<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
-<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
-<p>4.routerjs</p>
-<pre><code>&quot;/receive&quot;: {
-    component: receive
-},
-&quot;/receiveList/:userId&quot;: {
-    name: &apos;userList&apos;,
-    component: receiveList
-},
-&quot;/blessingDetail/:wishId/:state&quot;: {
-    name: &apos;blessingDetail&apos;,
-    component: blessingDetail
-},
-
-/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
-</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
-<p>6.cookie设置记录登录状态</p>
-<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
-    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
-    var cookieDate = new Date();
-    cookieDate.setDate(cookieDate.getDate() + expires);
-    // if(expires instanceof Date) {
-    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
-    // }
-    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
-    if(path) {
-        cookieText += &quot;; path=&quot; + path;
-    }
-    if(domain) {
-        cookieText += &quot;; domain=&quot; + domain;
-    }
-    if(secure){
-        cookieText += &quot;; secure&quot;;
-    }
-    document.cookie = cookieText;
-};
-
-     setCookie(&quot;phone&quot;, me.telephone, 30);
-
-    var getCookie = function(name){
-        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
-        var cookieStart = document.cookie.indexOf(cookieName);
-        var cookieValue = null;
-        if(cookieStart &gt; -1) {
-            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
-            if(cookieEnd == -1) {
-                cookieEnd = document.cookie.length;
-            }
-            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
-        }
-        // console.log(cookieValue);
-        // this.telephone = &apos;123&apos;;
-        return cookieValue;
-    };
-
-    if(getCookie(&quot;phone&quot;) !== null){
-        this.$route.router.go({
-            name: &quot;userList&quot;,
-            params: {
-                userId : getCookie(&quot;phone&quot;)
-            },
-        });
-    }
-</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
-<pre><code>var time = 60;
-var timer;
-timer = setInterval(function(){
-    if(time &gt; 0){
-        this.retimer = true;
-        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
-        event.target.disabled = true;
-    } else {
-        this.retimer = false;
-        window.clearInterval(timer);
-        event.target.innerHTML = &quot;获取验证码&quot;;
-        event.target.disabled = false;
-    }
-}, 1000);
-</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
-<p>9.</p>
-<blockquote>
-<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
-<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
-<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
-<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>后还需要另外加入</p>
-<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
-<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
-</blockquote>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
 	</div>
 
       
