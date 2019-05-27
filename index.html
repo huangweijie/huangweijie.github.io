@@ -28,7 +28,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="/headimg.jpeg" class="js-avatar">
+			<img lazy-src="https://imgchr.com/i/VV4Rz9" class="js-avatar">
 			
 		</a>
 
@@ -156,7 +156,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="/headimg.jpeg" class="js-avatar">
+				<img lazy-src="https://imgchr.com/i/VV4Rz9" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">Jacy</h1>
@@ -376,403 +376,6 @@ window.addEventListener(&quot;deviceorientation&quot;, function(event) {
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-异步编程" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/异步编程/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/异步编程/">异步编程</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>偏函数用法</strong></p>
-<pre><code>var toString = Object.prototype.toString;
-var isString = function (obj) {
-    return toString.call(obj) == &apos;[object String]&apos;;
-};
-var isFunction = function (obj) {
-    return oString.call(obj) == &apos;[object Function]&apos;;
-};
-</code></pre><p>工厂模式：</p>
-<pre><code>var isType = function (type) {
-    return function (obj) {
-        return toString.call(obj) == &apos;[object &apos; + type + &apos;]&apos;;
-    };
-};
-var isString = isType(&apos;String&apos;);
-var isFunction = isType(&apos;Function&apos;);
-</code></pre><p><strong>事件发布/订阅</strong></p>
-<pre><code>//订阅
-emitter.on(&quot;evebt1&quot;,function (message) {
-    console.log(message);
-});
-
-//发布
-emitter.emit(&apos;event1&apos;,&quot;I am message!&quot;);
-</code></pre><p>Node对事件发布/订阅机制做了额外处理：</p>
-<p>1.如果对一个时间添加超过10个侦听器会得到一条警告。这跟Node自身单线程有关，设计者认为侦听器太多可能存在内存泄漏。调用emitter.setMaxListeners(0)可以将这个限制去掉。另外，由于事件发布会引起一系列侦听器执行，如果侦听器过多，可能过多占用CPU。<br>2.为处理异常，EventEmitter对象对error事件进行了特殊对待。如果运行期间的错误触发了error事件，EventEmitter会检查是否有对error事件添加侦听器，若有则错误交给侦听器处理，否则抛出异常。如果外部没有捕获这个异常，将会引起线程退出。健壮的EventEmitter实例应对error事件做处理。</p>
-<p><strong>继承events模块</strong></p>
-<pre><code>var events = require(&apos;events&apos;);
-function Stream() {
-    events.EventEmitter.call(this);
-}
-util.inherits(Stream, events.EventEmitter);(Node在util中封装了继承方法)
-</code></pre><p><strong>EventProxy模块解决多异步之间的协作</strong></p>
-<pre><code>var proxy = new EventProxy();
-proxy.all(&quot;template&quot;, &quot;data&quot;, &quot;resources&quot;, function (template, data, resources) {
-    //TODO
-});
-fs.readFile(template_path, &quot;utf8&quot;, function (err, template) {
-    proxy.emit(&quot;template&quot;, template);
-});
-db.query(sql, function (err, data) {
-    proxy.emit(&quot;data&quot;, data);
-});
-l10n.get(function (err, resources) {
-    proxy.emit(&quot;resources&quot;, resources);
-});
-</code></pre><p>EventProxy提供了一个all()方法来订阅多个事件，当每个事件都被触发后，侦听器才会执行一次。另外一个tail()是侦听器在满足条件时执行一次后，如果组合事件中的某个事件再次触发，侦听器会用最新数据继续执行。</p>
-<p><strong>EventProxy的异常处理</strong></p>
-<p>EventProxy提供了fail()和done()两个实例方法优化异常处理，使开发关注业务部分，而不是异常捕获上。<br>fail():</p>
-<pre><code>ep.fail(callback);
-等价于：
-ep.fail(function (err) {
-    callback(err);
-});
-等价于：
-ep.bind(&apos;error&apos;, function (err) {
-    //卸载掉所有处理函数
-    ep.unbind();
-    //异常处理
-    callback(err);
-});
-</code></pre><p>done():<br>ep.done(‘tpl’);<br>等价于：</p>
-<pre><code>function (err, content) {
-    if (err) {
-        //一旦发生异常，交给error事件处理函数处理
-        return ep.emit(&apos;error&apos;, err);
-    }
-    ep.emit(&apos;tpl&apos;, content);
-}
-</code></pre><p>done()方法也接受一个函数作参数：</p>
-<pre><code>ep.done(function (content) {
-    //TODO
-    //这里无需考虑异常
-    ep.emit(&apos;tpl&apos;, content);
-});
-等价于：
-function (err, content) {
-    if (err) {
-        //一旦发生异常，交给error事件处理函数处理
-        return ep.emit(&apos;error&apos;, err);
-    }
-    (function (content) {
-        //TODO
-        //这里无需考虑异常
-        ep.emit(&apos;tpl&apos;, content);
-    }(content));
-}
-</code></pre><p><strong>then方法</strong></p>
-<p>1.接受完成态、错误态的回调方法。<br>2.可选的支持progress事件回调作为第三个方法。<br>3.then()方法只接受function对象，其余对象被忽略。<br>4.then()方法继续返回Promise对象，实现链式调用。<br>then方法定义：<br>then(fulfilledHandler, errorHandler, progressHandler)</p>
-<p><strong>以上为最为主流的模式：事件发布/订阅模式和Promise/Deferred模式</strong></p>
-<h3 id="非模式化应用"><a href="#非模式化应用" class="headerlink" title="非模式化应用"></a>非模式化应用</h3><p><strong>尾触发和Next</strong><br>尾触发目前应用最多的地方是Connect的中间件<br>最简单的中间件：</p>
-<pre><code>function(req请求对象, res响应对象, next尾触发函数){
-    //中间件
-}
-</code></pre><p>Connect的核心实现：</p>
-<pre><code>function createServer () {
-    function app(req, res){app.handle(req, res);}
-    utils.merge(app, proto);
-    utils.merge(app, EventEmitter.prototype);
-    app.route = &apos;/&apos;;
-    app.stack = [];//核心，中间件队列
-    for(var i = 0;i &lt; arguments.length; i++){
-        app.use(arguments[i]);
-    }
-    return app;
-};
-app.use = function(route, fn){
-    // some code
-    this.stack.push({ route: route, handle: fn});
-    return this;
-}
-Node原声合同http模块实现监听：
-app.listen = function () {
-    var server = http.createServer(this);
-    return server.listen.apply(server, arguments);
-};
-处理每一个监听到的网络请求：
-app.handle = function(req, res, out){
-    //some code
-    next();
-}
-简化后的next():
-function next(err) {
-    //some code
-    //next callback
-    layer = stack[index++];
-    layer.handle(req, res, next);//传入next持续触发
-}
-</code></pre><p><strong>流程控制模块async</strong><br>异步的串行执行：series()方法</p>
-<pre><code>async.series([
-    function(callback){
-        fs.readFile(&apos;file1.txt&apos;,&apos;utf-8&apos;,callback);
-    },
-    function(callback){
-        fa.readFile(&apos;file2.txt&apos;,&apos;utf-8&apos;,callback);
-    }
-],function(err, results) {
-    //results =&gt; [file1.txt, file2.txt]
-});
-等价于：
-fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, function(err, content){
-    if (err) {
-        return callback(err);
-    }
-    fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function(err, data) {
-        if(err) {
-            return callback(err);
-        }
-        callback(null, [content, data]);
-    });
-});
-</code></pre><p>异步的并行执行：parallel()方法</p>
-<pre><code>async.parallel([
-    function (callback) {
-        fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, callback);
-    },
-    function (callback) {
-        fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, callback);
-    }
-], function (err, results) {
-    //results =&gt; [file1.txt, file2.txt]
-});
-等价于：
-var counter = 2;
-var results = [];
-var done = function (index, value){
-    results[index] = value;
-    counter--;
-    if(counter === 0 ) {
-        callback(null, results);
-    }
-};
-//只传递第一个异常
-var hasErr = false;
-var fail = function (err) {
-    if(!hasErr) {
-        hasErr = true;
-        callback(err);
-    }
-};
-fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, function (err, content) {
-    if (err) {
-        return fail(err);
-    }
-    done(0, content);
-});
-fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
-    if (err) {
-        return fail(err);
-    }
-    done(1, data);
-});
-</code></pre>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
-<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
-<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
-</blockquote>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
-<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
-<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
-<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
-<p>4.routerjs</p>
-<pre><code>&quot;/receive&quot;: {
-    component: receive
-},
-&quot;/receiveList/:userId&quot;: {
-    name: &apos;userList&apos;,
-    component: receiveList
-},
-&quot;/blessingDetail/:wishId/:state&quot;: {
-    name: &apos;blessingDetail&apos;,
-    component: blessingDetail
-},
-
-/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
-</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
-<p>6.cookie设置记录登录状态</p>
-<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
-    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
-    var cookieDate = new Date();
-    cookieDate.setDate(cookieDate.getDate() + expires);
-    // if(expires instanceof Date) {
-    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
-    // }
-    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
-    if(path) {
-        cookieText += &quot;; path=&quot; + path;
-    }
-    if(domain) {
-        cookieText += &quot;; domain=&quot; + domain;
-    }
-    if(secure){
-        cookieText += &quot;; secure&quot;;
-    }
-    document.cookie = cookieText;
-};
-
-     setCookie(&quot;phone&quot;, me.telephone, 30);
-
-    var getCookie = function(name){
-        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
-        var cookieStart = document.cookie.indexOf(cookieName);
-        var cookieValue = null;
-        if(cookieStart &gt; -1) {
-            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
-            if(cookieEnd == -1) {
-                cookieEnd = document.cookie.length;
-            }
-            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
-        }
-        // console.log(cookieValue);
-        // this.telephone = &apos;123&apos;;
-        return cookieValue;
-    };
-
-    if(getCookie(&quot;phone&quot;) !== null){
-        this.$route.router.go({
-            name: &quot;userList&quot;,
-            params: {
-                userId : getCookie(&quot;phone&quot;)
-            },
-        });
-    }
-</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
-<pre><code>var time = 60;
-var timer;
-timer = setInterval(function(){
-    if(time &gt; 0){
-        this.retimer = true;
-        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
-        event.target.disabled = true;
-    } else {
-        this.retimer = false;
-        window.clearInterval(timer);
-        event.target.innerHTML = &quot;获取验证码&quot;;
-        event.target.disabled = false;
-    }
-}, 1000);
-</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
-<p>9.</p>
-<blockquote>
-<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
-<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
-<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
-<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>后还需要另外加入</p>
-<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
-<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
-</blockquote>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
 	</div>
 
       
@@ -1140,6 +743,403 @@ changePage(page) {
 </code></pre><p><strong>8.</strong>活动页主要处理的就是表情的问题了，emoji表情啊，想必大家在发微信墙的时候都想要用表情表达下自己当时的心情吧，但是文字完全不能展现啊～<br>    好的我们上emoji的了：<a href="https://github.com/OneSignal/emoji-picker.git" target="_blank" rel="noopener">https://github.com/OneSignal/emoji-picker.git</a><br>    当然github中有很多这些可以引用看看，但是试了那么多还是这个比较符合要求，看着代码我还改了那么一丢丢，它原先是禁用了iphone的，我重新把它开上了，但是这个主要是用插件自带的emoji表情，而不是我们的输入法带的，这就非常的不舒服了。经过test，它在iPhone上使用输入法的emoji表情还是支持的，但是在安卓上就不行了，真是，伟大的程序员又要出来解决这些麻烦事了，嘿嘿嘿，虽然到现在还没解决，稍微有点眉目吧，等我再细研究研究这些编码问题先～～<br>    当然了，如果浏览器或者输入法能像iphone那样支持的话多好啊，方便开发者，方便用户，当然，问题还是要解决的！</p>
 <p>好了，这次的博文就到这里了，这里还发现我写的代码注释可能还不是特别的够，虽然语义上够了，但是适当注释还是不要偷懒加上～～又尴尬了～另外md编辑博文其实还是不太方便，要想加多点元素确实还是比较麻烦的，看我这么简洁的写就知道了，可能在稍微有点久的将来我就自己开发一个博文好了，方便自己使用，到时有了再给大家分享把。。！行吧该睡觉了，给各位看博文的说晚安了。。！</p>
 
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
+<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
+<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
+<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
+<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
+<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
+<p>4.routerjs</p>
+<pre><code>&quot;/receive&quot;: {
+    component: receive
+},
+&quot;/receiveList/:userId&quot;: {
+    name: &apos;userList&apos;,
+    component: receiveList
+},
+&quot;/blessingDetail/:wishId/:state&quot;: {
+    name: &apos;blessingDetail&apos;,
+    component: blessingDetail
+},
+
+/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
+</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
+<p>6.cookie设置记录登录状态</p>
+<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
+    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
+    var cookieDate = new Date();
+    cookieDate.setDate(cookieDate.getDate() + expires);
+    // if(expires instanceof Date) {
+    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
+    // }
+    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
+    if(path) {
+        cookieText += &quot;; path=&quot; + path;
+    }
+    if(domain) {
+        cookieText += &quot;; domain=&quot; + domain;
+    }
+    if(secure){
+        cookieText += &quot;; secure&quot;;
+    }
+    document.cookie = cookieText;
+};
+
+     setCookie(&quot;phone&quot;, me.telephone, 30);
+
+    var getCookie = function(name){
+        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
+        var cookieStart = document.cookie.indexOf(cookieName);
+        var cookieValue = null;
+        if(cookieStart &gt; -1) {
+            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
+            if(cookieEnd == -1) {
+                cookieEnd = document.cookie.length;
+            }
+            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
+        }
+        // console.log(cookieValue);
+        // this.telephone = &apos;123&apos;;
+        return cookieValue;
+    };
+
+    if(getCookie(&quot;phone&quot;) !== null){
+        this.$route.router.go({
+            name: &quot;userList&quot;,
+            params: {
+                userId : getCookie(&quot;phone&quot;)
+            },
+        });
+    }
+</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
+<pre><code>var time = 60;
+var timer;
+timer = setInterval(function(){
+    if(time &gt; 0){
+        this.retimer = true;
+        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
+        event.target.disabled = true;
+    } else {
+        this.retimer = false;
+        window.clearInterval(timer);
+        event.target.innerHTML = &quot;获取验证码&quot;;
+        event.target.disabled = false;
+    }
+}, 1000);
+</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
+<p>9.</p>
+<blockquote>
+<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
+<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
+<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
+<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>后还需要另外加入</p>
+<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
+<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-异步编程" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/异步编程/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/异步编程/">异步编程</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>偏函数用法</strong></p>
+<pre><code>var toString = Object.prototype.toString;
+var isString = function (obj) {
+    return toString.call(obj) == &apos;[object String]&apos;;
+};
+var isFunction = function (obj) {
+    return oString.call(obj) == &apos;[object Function]&apos;;
+};
+</code></pre><p>工厂模式：</p>
+<pre><code>var isType = function (type) {
+    return function (obj) {
+        return toString.call(obj) == &apos;[object &apos; + type + &apos;]&apos;;
+    };
+};
+var isString = isType(&apos;String&apos;);
+var isFunction = isType(&apos;Function&apos;);
+</code></pre><p><strong>事件发布/订阅</strong></p>
+<pre><code>//订阅
+emitter.on(&quot;evebt1&quot;,function (message) {
+    console.log(message);
+});
+
+//发布
+emitter.emit(&apos;event1&apos;,&quot;I am message!&quot;);
+</code></pre><p>Node对事件发布/订阅机制做了额外处理：</p>
+<p>1.如果对一个时间添加超过10个侦听器会得到一条警告。这跟Node自身单线程有关，设计者认为侦听器太多可能存在内存泄漏。调用emitter.setMaxListeners(0)可以将这个限制去掉。另外，由于事件发布会引起一系列侦听器执行，如果侦听器过多，可能过多占用CPU。<br>2.为处理异常，EventEmitter对象对error事件进行了特殊对待。如果运行期间的错误触发了error事件，EventEmitter会检查是否有对error事件添加侦听器，若有则错误交给侦听器处理，否则抛出异常。如果外部没有捕获这个异常，将会引起线程退出。健壮的EventEmitter实例应对error事件做处理。</p>
+<p><strong>继承events模块</strong></p>
+<pre><code>var events = require(&apos;events&apos;);
+function Stream() {
+    events.EventEmitter.call(this);
+}
+util.inherits(Stream, events.EventEmitter);(Node在util中封装了继承方法)
+</code></pre><p><strong>EventProxy模块解决多异步之间的协作</strong></p>
+<pre><code>var proxy = new EventProxy();
+proxy.all(&quot;template&quot;, &quot;data&quot;, &quot;resources&quot;, function (template, data, resources) {
+    //TODO
+});
+fs.readFile(template_path, &quot;utf8&quot;, function (err, template) {
+    proxy.emit(&quot;template&quot;, template);
+});
+db.query(sql, function (err, data) {
+    proxy.emit(&quot;data&quot;, data);
+});
+l10n.get(function (err, resources) {
+    proxy.emit(&quot;resources&quot;, resources);
+});
+</code></pre><p>EventProxy提供了一个all()方法来订阅多个事件，当每个事件都被触发后，侦听器才会执行一次。另外一个tail()是侦听器在满足条件时执行一次后，如果组合事件中的某个事件再次触发，侦听器会用最新数据继续执行。</p>
+<p><strong>EventProxy的异常处理</strong></p>
+<p>EventProxy提供了fail()和done()两个实例方法优化异常处理，使开发关注业务部分，而不是异常捕获上。<br>fail():</p>
+<pre><code>ep.fail(callback);
+等价于：
+ep.fail(function (err) {
+    callback(err);
+});
+等价于：
+ep.bind(&apos;error&apos;, function (err) {
+    //卸载掉所有处理函数
+    ep.unbind();
+    //异常处理
+    callback(err);
+});
+</code></pre><p>done():<br>ep.done(‘tpl’);<br>等价于：</p>
+<pre><code>function (err, content) {
+    if (err) {
+        //一旦发生异常，交给error事件处理函数处理
+        return ep.emit(&apos;error&apos;, err);
+    }
+    ep.emit(&apos;tpl&apos;, content);
+}
+</code></pre><p>done()方法也接受一个函数作参数：</p>
+<pre><code>ep.done(function (content) {
+    //TODO
+    //这里无需考虑异常
+    ep.emit(&apos;tpl&apos;, content);
+});
+等价于：
+function (err, content) {
+    if (err) {
+        //一旦发生异常，交给error事件处理函数处理
+        return ep.emit(&apos;error&apos;, err);
+    }
+    (function (content) {
+        //TODO
+        //这里无需考虑异常
+        ep.emit(&apos;tpl&apos;, content);
+    }(content));
+}
+</code></pre><p><strong>then方法</strong></p>
+<p>1.接受完成态、错误态的回调方法。<br>2.可选的支持progress事件回调作为第三个方法。<br>3.then()方法只接受function对象，其余对象被忽略。<br>4.then()方法继续返回Promise对象，实现链式调用。<br>then方法定义：<br>then(fulfilledHandler, errorHandler, progressHandler)</p>
+<p><strong>以上为最为主流的模式：事件发布/订阅模式和Promise/Deferred模式</strong></p>
+<h3 id="非模式化应用"><a href="#非模式化应用" class="headerlink" title="非模式化应用"></a>非模式化应用</h3><p><strong>尾触发和Next</strong><br>尾触发目前应用最多的地方是Connect的中间件<br>最简单的中间件：</p>
+<pre><code>function(req请求对象, res响应对象, next尾触发函数){
+    //中间件
+}
+</code></pre><p>Connect的核心实现：</p>
+<pre><code>function createServer () {
+    function app(req, res){app.handle(req, res);}
+    utils.merge(app, proto);
+    utils.merge(app, EventEmitter.prototype);
+    app.route = &apos;/&apos;;
+    app.stack = [];//核心，中间件队列
+    for(var i = 0;i &lt; arguments.length; i++){
+        app.use(arguments[i]);
+    }
+    return app;
+};
+app.use = function(route, fn){
+    // some code
+    this.stack.push({ route: route, handle: fn});
+    return this;
+}
+Node原声合同http模块实现监听：
+app.listen = function () {
+    var server = http.createServer(this);
+    return server.listen.apply(server, arguments);
+};
+处理每一个监听到的网络请求：
+app.handle = function(req, res, out){
+    //some code
+    next();
+}
+简化后的next():
+function next(err) {
+    //some code
+    //next callback
+    layer = stack[index++];
+    layer.handle(req, res, next);//传入next持续触发
+}
+</code></pre><p><strong>流程控制模块async</strong><br>异步的串行执行：series()方法</p>
+<pre><code>async.series([
+    function(callback){
+        fs.readFile(&apos;file1.txt&apos;,&apos;utf-8&apos;,callback);
+    },
+    function(callback){
+        fa.readFile(&apos;file2.txt&apos;,&apos;utf-8&apos;,callback);
+    }
+],function(err, results) {
+    //results =&gt; [file1.txt, file2.txt]
+});
+等价于：
+fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, function(err, content){
+    if (err) {
+        return callback(err);
+    }
+    fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function(err, data) {
+        if(err) {
+            return callback(err);
+        }
+        callback(null, [content, data]);
+    });
+});
+</code></pre><p>异步的并行执行：parallel()方法</p>
+<pre><code>async.parallel([
+    function (callback) {
+        fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, callback);
+    },
+    function (callback) {
+        fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, callback);
+    }
+], function (err, results) {
+    //results =&gt; [file1.txt, file2.txt]
+});
+等价于：
+var counter = 2;
+var results = [];
+var done = function (index, value){
+    results[index] = value;
+    counter--;
+    if(counter === 0 ) {
+        callback(null, results);
+    }
+};
+//只传递第一个异常
+var hasErr = false;
+var fail = function (err) {
+    if(!hasErr) {
+        hasErr = true;
+        callback(err);
+    }
+};
+fs.readFile(&apos;file1.txt&apos;, &apos;utf-8&apos;, function (err, content) {
+    if (err) {
+        return fail(err);
+    }
+    done(0, content);
+});
+fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
+    if (err) {
+        return fail(err);
+    }
+    done(1, data);
+});
+</code></pre>
       
     </div>
     
