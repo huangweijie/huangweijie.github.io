@@ -395,73 +395,6 @@ window.addEventListener(&quot;deviceorientation&quot;, function(event) {
 
 
   
-    <article id="post-异步I-O" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/异步I-O/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/异步I-O/">异步I/O</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>异步I/O与非阻塞I/O</strong></p>
-<p>阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。<br>非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）</p>
-<p><strong>轮询技术</strong></p>
-<p>read：最原始，性能最低。通过重复调用检查I/O状态完成。在得到最终数据前，CPU一直耗在等待上。<br>select：改进成通过文件描述符上事件状态来判断。有一个较弱限制，通过一个1024长度数组来存储状态，最多可同时检查             1024个文件描述符。<br>poll：改进成通过链表存储，性能限制有所改善，跟select类似。<br>epoll：Linux下效率最高的I/O事件通知机制，在进入轮询时没有检查到I/O事件时进行休眠，直到事件发生唤醒。它真实利用了事件通知、执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率较高。<br>kqueue：该方案实现与epoll类似，不过它仅在FreeBSD系统下存在。</p>
-<p>轮询技术满足了非阻塞I/O确保获取完整数据的需求，但对于应用程序仍然算是同步，应用程序仍然需要等待I/O完全返回。</p>
-<p><strong>请求对象</strong></p>
-<p>从javascript发起调用到内核执行I/O操作的过渡过程中，存在一种中间产物，叫请求对象。<br>javascript调用-&gt;node核心模块-&gt;c++内建模块-&gt;通过libuv进行系统调用<br>libuv作为封装层，有两个平台的实现（win和unix），实际上调用了uv_fs_open()方法，在其调用过程中，创建了FSReqWrap对象，javascript层传入的参数和方法封装在这个请求对象中，回调函数则设置在这个对象的oncomplete_sym属性上。<br>请求对象是异步I/O过程的重要中间产物，所有状态都保存在这个对象，包括送入线程池等待执行及I/O操作完毕后的回调处理。</p>
-<p>小结<br>异步I/O：单线程、事件循环、观察者和I/O线程池。在Node中，javascript是单线程，node自身是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点是，除了用户代码无法并行执行外，所有I/O（磁盘I/O和网络I/O等）是可以并行起来的。</p>
-<p><strong>非I/O的异步API</strong></p>
-<p>立即异步执行：<br>setTimeout(function(){<br>    //<br>},0);<br>这种方法较浪费性能<br>process.nextTick(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行</p>
-<p>setImmediate(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行<br>process.nextTick()跟setImmediate()类似，但：<br>process.nextTick(function(){<br>    console.log(‘nextTick延迟执行’)；<br>})；<br>setImmediate(function(){<br>    console.log(‘setImmediate延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>nextTick延迟执行<br>setImmediate延迟执行<br>process.nextTick()中回调函数优先级高于setImmediate()。因为事件循环对观察者的检查有先后顺序，process.nextTick()属于idle观察者，setImmediate()属于check观察者。<br>每一轮循环检查中，idle观察者&gt;I/O观察者&gt;check观察者</p>
-<p>process.nextTick()的回调函数存在一个数组中，每轮循环全部执行完；<br>setImmediate()每轮只执行链表中的一个回调函数。</p>
-<p>事件驱动和高性能服务器<br>经典服务器模型：<br>同步式：一次处理一个请求，其余请求处于等待状态；<br>每进程/每请求：每个请求创建一个进程，可处理多个请求，但不具备扩展性，系统资源有限；<br>每线程/每请求：每个请求创建一个线程，可处理多个请求，线程比进程轻量，但每个线程也占内存，对于大型站点仍然不够。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
     <article id="post-异步编程" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
@@ -681,6 +614,224 @@ fs.readFile(&apos;file2.txt&apos;, &apos;utf-8&apos;, function (err, content) {
     done(1, data);
 });
 </code></pre>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
+<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
+<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
+<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
+<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
+<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
+<p>4.routerjs</p>
+<pre><code>&quot;/receive&quot;: {
+    component: receive
+},
+&quot;/receiveList/:userId&quot;: {
+    name: &apos;userList&apos;,
+    component: receiveList
+},
+&quot;/blessingDetail/:wishId/:state&quot;: {
+    name: &apos;blessingDetail&apos;,
+    component: blessingDetail
+},
+
+/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
+</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
+<p>6.cookie设置记录登录状态</p>
+<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
+    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
+    var cookieDate = new Date();
+    cookieDate.setDate(cookieDate.getDate() + expires);
+    // if(expires instanceof Date) {
+    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
+    // }
+    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
+    if(path) {
+        cookieText += &quot;; path=&quot; + path;
+    }
+    if(domain) {
+        cookieText += &quot;; domain=&quot; + domain;
+    }
+    if(secure){
+        cookieText += &quot;; secure&quot;;
+    }
+    document.cookie = cookieText;
+};
+
+     setCookie(&quot;phone&quot;, me.telephone, 30);
+
+    var getCookie = function(name){
+        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
+        var cookieStart = document.cookie.indexOf(cookieName);
+        var cookieValue = null;
+        if(cookieStart &gt; -1) {
+            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
+            if(cookieEnd == -1) {
+                cookieEnd = document.cookie.length;
+            }
+            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
+        }
+        // console.log(cookieValue);
+        // this.telephone = &apos;123&apos;;
+        return cookieValue;
+    };
+
+    if(getCookie(&quot;phone&quot;) !== null){
+        this.$route.router.go({
+            name: &quot;userList&quot;,
+            params: {
+                userId : getCookie(&quot;phone&quot;)
+            },
+        });
+    }
+</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
+<pre><code>var time = 60;
+var timer;
+timer = setInterval(function(){
+    if(time &gt; 0){
+        this.retimer = true;
+        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
+        event.target.disabled = true;
+    } else {
+        this.retimer = false;
+        window.clearInterval(timer);
+        event.target.innerHTML = &quot;获取验证码&quot;;
+        event.target.disabled = false;
+    }
+}, 1000);
+</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
+<p>9.</p>
+<blockquote>
+<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
+<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
+<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
+<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>后还需要另外加入</p>
+<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
+<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-异步I-O" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/07/异步I-O/" class="article-date">
+  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/07/异步I-O/">异步I/O</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>异步I/O与非阻塞I/O</strong></p>
+<p>阻塞I/O：调用之后等到系统内核层面完成所有操作后调用结束，造成CPU等待I/O，浪费等待时间，CPU处理能力不能充分利用。<br>非阻塞I/O：调用之后立即返回，CPU时间片可以用来处理其他事务，提升性能。但其立即返回的不是完整数据，而是调用状态，应用程序需要利用轮询的办法重复调用I/O来获取完整数据和确认是否完成。（让CPU处理状态判断，浪费CPU资源）</p>
+<p><strong>轮询技术</strong></p>
+<p>read：最原始，性能最低。通过重复调用检查I/O状态完成。在得到最终数据前，CPU一直耗在等待上。<br>select：改进成通过文件描述符上事件状态来判断。有一个较弱限制，通过一个1024长度数组来存储状态，最多可同时检查             1024个文件描述符。<br>poll：改进成通过链表存储，性能限制有所改善，跟select类似。<br>epoll：Linux下效率最高的I/O事件通知机制，在进入轮询时没有检查到I/O事件时进行休眠，直到事件发生唤醒。它真实利用了事件通知、执行回调的方式，而不是遍历查询，不会浪费CPU，执行效率较高。<br>kqueue：该方案实现与epoll类似，不过它仅在FreeBSD系统下存在。</p>
+<p>轮询技术满足了非阻塞I/O确保获取完整数据的需求，但对于应用程序仍然算是同步，应用程序仍然需要等待I/O完全返回。</p>
+<p><strong>请求对象</strong></p>
+<p>从javascript发起调用到内核执行I/O操作的过渡过程中，存在一种中间产物，叫请求对象。<br>javascript调用-&gt;node核心模块-&gt;c++内建模块-&gt;通过libuv进行系统调用<br>libuv作为封装层，有两个平台的实现（win和unix），实际上调用了uv_fs_open()方法，在其调用过程中，创建了FSReqWrap对象，javascript层传入的参数和方法封装在这个请求对象中，回调函数则设置在这个对象的oncomplete_sym属性上。<br>请求对象是异步I/O过程的重要中间产物，所有状态都保存在这个对象，包括送入线程池等待执行及I/O操作完毕后的回调处理。</p>
+<p>小结<br>异步I/O：单线程、事件循环、观察者和I/O线程池。在Node中，javascript是单线程，node自身是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点是，除了用户代码无法并行执行外，所有I/O（磁盘I/O和网络I/O等）是可以并行起来的。</p>
+<p><strong>非I/O的异步API</strong></p>
+<p>立即异步执行：<br>setTimeout(function(){<br>    //<br>},0);<br>这种方法较浪费性能<br>process.nextTick(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行</p>
+<p>setImmediate(function(){<br>    console.log(‘延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>延迟执行<br>process.nextTick()跟setImmediate()类似，但：<br>process.nextTick(function(){<br>    console.log(‘nextTick延迟执行’)；<br>})；<br>setImmediate(function(){<br>    console.log(‘setImmediate延迟执行’)；<br>})；<br>console.log(‘正常执行’)；<br>输出：<br>正常执行<br>nextTick延迟执行<br>setImmediate延迟执行<br>process.nextTick()中回调函数优先级高于setImmediate()。因为事件循环对观察者的检查有先后顺序，process.nextTick()属于idle观察者，setImmediate()属于check观察者。<br>每一轮循环检查中，idle观察者&gt;I/O观察者&gt;check观察者</p>
+<p>process.nextTick()的回调函数存在一个数组中，每轮循环全部执行完；<br>setImmediate()每轮只执行链表中的一个回调函数。</p>
+<p>事件驱动和高性能服务器<br>经典服务器模型：<br>同步式：一次处理一个请求，其余请求处于等待状态；<br>每进程/每请求：每个请求创建一个进程，可处理多个请求，但不具备扩展性，系统资源有限；<br>每线程/每请求：每个请求创建一个线程，可处理多个请求，线程比进程轻量，但每个线程也占内存，对于大型站点仍然不够。</p>
+
       
     </div>
     
@@ -997,157 +1148,6 @@ changePage(page) {
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-我们家CSCWFE+总结" class="article article-type-post" itemscope="" itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2017/05/07/我们家CSCWFE+总结/" class="article-date">
-  	<time datetime="2017-05-06T16:00:00.000Z" itemprop="datePublished">2017-05-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/07/我们家CSCWFE+总结/">我们家CSCWFE+总结</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="CSCWFE"><a href="#CSCWFE" class="headerlink" title="CSCWFE"></a>CSCWFE</h2><blockquote>
-<p>新招收的一帮小伙子小姑娘还挺不错,怎么说在学习态度上还是挺让人欣慰的,希望这一个月的培训能给他们带来帮助,哈哈未来是你们的!</p>
-<p>一个月培训下来,自己在做准备工作的时候还是有一些收获,有些不常用忘掉的知识可以补回来,原有的知识还能加深理解,跟小伙子小姑娘们一起的这段时间是非常快乐的~再详细的东西就记在心中,不多说啦.</p>
-</blockquote>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="中秋佳节"><a href="#中秋佳节" class="headerlink" title="中秋佳节"></a>中秋佳节</h3><p><strong>项目FE技术:</strong> 中秋活动采用vuejs框架,使用gulp webpack打包,gulp livereload的自动刷新功能对开发提供了很大的便利,vue以组件切换的形式代替了传统的页面跳转刷新实现视图的切换.<br><strong>项目目的:</strong> 为了更好的卖月饼O(∩_∩)O!!!购买月饼的客户可拥有发起祝福的机会,通过祝福的分享点赞列出排行,从而通过排名送出活动礼品.<br><strong>项目技术内容分析+收获:</strong></p>
-<p>1.由于原先有写过vue项目,所以对vue的开发还是有点经验的,对于一些小细节上的问题还是能注意到,但是这次是完全的自己写的项目,出现的问题还是不少,收获很大.</p>
-<p>2.样式的问题,由于使用vue是将项目所有的js文件打包成一个js,所有的style打包在一起,所以不同组件的class名需要区分开来,不然虽然style写在不同组件,但由于最后是打包在一块,所以是一起加载的,会影响各个组件的样式.</p>
-<p>3.逗号问题,在vue中逗号也是一个需要时刻注意的小细节,在每一个变量,每一个函数,每一个块后边都习惯性的加一个逗号,否则会报错,虽然在终端能看到错误的位置,但是注意好这些细节还是能节约开发时间,时间是宝贵的,虽然看起来似乎不多,但给自己少制造麻烦是个好习惯.</p>
-<p>4.routerjs</p>
-<pre><code>&quot;/receive&quot;: {
-    component: receive
-},
-&quot;/receiveList/:userId&quot;: {
-    name: &apos;userList&apos;,
-    component: receiveList
-},
-&quot;/blessingDetail/:wishId/:state&quot;: {
-    name: &apos;blessingDetail&apos;,
-    component: blessingDetail
-},
-
-/receive路由路径名,name此路由(表示整个路由)名字,component此路由加载的组件,组件的切换位置对应相应的router-view标签内,/:wishId表示对路由传入的数据,在路由中接收,router.go()或v-link需带上params对象,另外还有subRoutes表示此路由的子路由,路由可层层递进.
-</code></pre><p>5.background,background-size:100% 100%可使背景图在当前区域完全拉伸显示出来,但是这会有点输入框弹出输入法将背景往上挤压的问题,通过background-size:cover可以解决挤压问题,cover是让背景覆盖在区域上,但是cover在图片较大时会使图片显示不全,background-attachment:fixed可使背景固定不动,而默认的scroll表示背景会随着内容的滚动的滚动上去.</p>
-<p>6.cookie设置记录登录状态</p>
-<pre><code>var setCookie = function(name, value, expires, path, domain, secure){
-    var cookieText = encodeURIComponent(name) + &quot;=&quot; + encodeURIComponent(value);
-    var cookieDate = new Date();
-    cookieDate.setDate(cookieDate.getDate() + expires);
-    // if(expires instanceof Date) {
-    //     cookieText += &quot;; expires=&quot; + expires.toGMTString();
-    // }
-    cookieText += &quot;; expires=&quot; + cookieDate.toGMTString();
-    if(path) {
-        cookieText += &quot;; path=&quot; + path;
-    }
-    if(domain) {
-        cookieText += &quot;; domain=&quot; + domain;
-    }
-    if(secure){
-        cookieText += &quot;; secure&quot;;
-    }
-    document.cookie = cookieText;
-};
-
-     setCookie(&quot;phone&quot;, me.telephone, 30);
-
-    var getCookie = function(name){
-        var cookieName = encodeURIComponent(name) + &quot;=&quot;;
-        var cookieStart = document.cookie.indexOf(cookieName);
-        var cookieValue = null;
-        if(cookieStart &gt; -1) {
-            var cookieEnd = document.cookie.indexOf(&quot;;&quot; , cookieStart);
-            if(cookieEnd == -1) {
-                cookieEnd = document.cookie.length;
-            }
-            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
-        }
-        // console.log(cookieValue);
-        // this.telephone = &apos;123&apos;;
-        return cookieValue;
-    };
-
-    if(getCookie(&quot;phone&quot;) !== null){
-        this.$route.router.go({
-            name: &quot;userList&quot;,
-            params: {
-                userId : getCookie(&quot;phone&quot;)
-            },
-        });
-    }
-</code></pre><p>7.验证码倒计时:event为触发的函数的参数,触发时无需传入</p>
-<pre><code>var time = 60;
-var timer;
-timer = setInterval(function(){
-    if(time &gt; 0){
-        this.retimer = true;
-        event.target.innerHTML = &quot;还有 &quot; + (time--) + &quot; 秒&quot;;
-        event.target.disabled = true;
-    } else {
-        this.retimer = false;
-        window.clearInterval(timer);
-        event.target.innerHTML = &quot;获取验证码&quot;;
-        event.target.disabled = false;
-    }
-}, 1000);
-</code></pre><p>8.变量的作用域,全局的变量可以存在data中,使用this关键字访问.</p>
-<p>9.</p>
-<blockquote>
-<p>最后也是最大的boss,微信的api,原先以为只是简单的调用api,谁知是个大坑.微信的api还是有很多不完善的地方,签名上头一步错,后面一直没法用,时间就这么拖着,当可以使用了又有很多使用上的困难,在每一个需要使用微信接口的页面都需要对微信接口进行配置.</p>
-<p>比如,想要听取微信的接收的录音,由于不是发出端,所以没有发送的本地id可以在微信听取录音中直接调用,这样的话就需要另外写个播放器来听取录音.又由于微信录取的录音是arm格式,h5中audio不支持arm格式,找了很久的转码方式,最后还是后台那边转码传过来才能听取.</p>
-<p>另外,需要特别注意的一点是,想要微信接口支持iphone,在加入</p>
-<pre><code>&lt;script src=&quot;http://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>后还需要另外加入</p>
-<pre><code>&lt;script src=&quot;https://res.wx.qq.com/open/js/jweixin-1.0.0.js&quot;&gt;&lt;/script&gt;
-</code></pre><p>而且,还没有探究出来的一个bug就是在多个页面上,有的写了禁止分享操作,有的写了分享操作,在Android上是可以正常执行的,但是在iPhone上会导致这几个页面全部都没有分享,这是项目正常运行的一个重要的细节,当时这问题是通过绕过问题来跳过了,但是绕过问题而不是解决的问题的方法是不支持的,这个问题还值得探究探究.</p>
-<p>总之,微信api坑不少,可能以后还会遇到其他的,慢慢积累经验吧~</p>
-</blockquote>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/娱乐-经验/">娱乐+经验</a></li></ul>
 	</div>
 
       
